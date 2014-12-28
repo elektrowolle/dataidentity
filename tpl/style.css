@@ -1,0 +1,41 @@
+body{
+	font-family: 'Open Sans Condensed', sans-serif;
+	background: #111;
+	color: #eff;
+	-webkit-text-size-adjust:none;
+}
+
+.arrivalsList{
+	width: 100%;
+}
+
+
+#page{
+	/*max-width: 480px;*/
+	text-align:left;
+}
+
+thead{
+	color: #000;
+	font-variant: small-caps;
+	background-color: #ffe;
+}
+
+.arrival, .name, .status{
+
+}
+.arrival {
+
+}
+.name{
+
+}
+
+#statusContainer{
+
+}
+
+
+.block{
+
+}

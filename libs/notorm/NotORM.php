@@ -28,7 +28,6 @@ abstract class NotORM_Abstract {
 	protected $notORM, $table, $primary, $rows, $referenced = array();
 	
 	protected $debug = false;
-	protected $debugTimer;
 	protected $freeze = false;
 	protected $rowClass = 'NotORM_Row';
 	protected $jsonAsArray = false;
@@ -76,7 +75,7 @@ class NotORM extends NotORM_Abstract {
 	* @return null
 	*/
 	function __set($name, $value) {
-		if ($name == "debug" || $name == "debugTimer" || $name == "freeze" || $name == "rowClass" || $name == "jsonAsArray") {
+		if ($name == "debug" || $name == "freeze" || $name == "rowClass" || $name == "jsonAsArray") {
 			$this->$name = $value;
 		}
 		if ($name == "transaction") {

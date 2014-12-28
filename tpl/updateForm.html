@@ -1,0 +1,42 @@
+<h2>{"%%name%%"|str_replace:$arrival.name, $_welcome}</h2>
+{"%%minutesTillArrival%%"|str_replace:$arrivalTimeM, $_not_yet_arrived}
+<fieldset>
+	<input name="id" value="{$arrival.id}" type="hidden">
+	<input name="api" type="hidden" class="form-control" value="arrivals">
+	<input name="request" type="hidden" class="form-control" value="updateArrival">
+	<input name="output" type="hidden" class="form-control" value="html">
+	<input name="replace" type="hidden" class="form-control" value="announceForm">
+	<input name="announce" type="submit" value="{$_updateLocation}">
+</fieldset>
+
+<script type="text/javascript">
+
+var arrivalTimeM = {$arrivalTimeM};
+var forLocalStorage = {$localStorage|json_encode:true};
+
+saveInLocalStorage(forLocalStorage);
+
+getLocation();
+
+if (arrivalTimeM < 0) {
+	updateArrivalTime();
+};
+
+function updateArrivalTime () {
+	getLocation();
+	if (arrivalTimeM < 0) {
+		console.debug("update arrival Time");
+		$("#announceForm").submit();
+	};
+}
+
+$("#").submit(function (event) {
+
+})
+
+if(typeof arrivalUpdaterRunning == "undefined"){
+	setInterval(updateArrivalTime, 40000);
+}
+
+var arrivalUpdaterRunning = true;
+</script>

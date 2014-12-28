@@ -159,10 +159,7 @@ class NotORM_Result extends NotORM_Abstract implements Iterator, ArrayAccess, Co
 		}
 		$return = $this->notORM->connection->prepare($query);
 		if (!$return || !$return->execute(array_map(array($this, 'formatValue'), $parameters))) {
-			$return = false;
-		}
-		if ($this->notORM->debugTimer) {
-			call_user_func($this->notORM->debugTimer);
+			return false;
 		}
 		return $return;
 	}
@@ -227,11 +224,8 @@ class NotORM_Result extends NotORM_Abstract implements Iterator, ArrayAccess, Co
 					}
 				}
 			}
-			//! driver specific extended insert
-			$insert = ($data || $this->notORM->driver == "mysql"
-				? "(" . implode(", ", array_keys($data)) . ") VALUES " . implode(", ", $values)
-				: "DEFAULT VALUES"
-			);
+			//! driver specific empty $data and extended insert
+			$insert = "(" . implode(", ", array_keys($data)) . ") VALUES " . implode(", ", $values);
 		}
 		// requires empty $this->parameters
 		$return = $this->query("INSERT INTO $this->table $insert", $parameters);
@@ -496,19 +490,18 @@ class NotORM_Result extends NotORM_Abstract implements Iterator, ArrayAccess, Co
 	}
 	
 	/** Add order clause, more calls appends to the end
-	* @param mixed "column1, column2 DESC" or array("column1", "column2 DESC"), empty string to reset previous order
+	* @param string for example "column1, column2 DESC", empty string to reset previous order
 	* @param string ...
 	* @return NotORM_Result fluent interface
 	*/
 	function order($columns) {
 		$this->rows = null;
 		if ($columns != "") {
-			$columns = (is_array($columns) ? $columns : func_get_args());
-			foreach ($columns as $column) {
+			foreach (func_get_args() as $columns) {
 				if ($this->union) {
-					$this->unionOrder[] = $column;
+					$this->unionOrder[] = $columns;
 				} else {
-					$this->order[] = $column;
+					$this->order[] = $columns;
 				}
 			}
 		} elseif ($this->union) {

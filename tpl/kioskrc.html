@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Kiosk Remote</title>
+	{include="basicHeaders"}
+</head>
+<body>
+<div data-role="page" id="page" class="container">
+<h1>Kiosk Remote Control!</h1>
+
+
+<form id="controlForm" role="form" action="{$api_address}/kiosk/remoteControl.json" method="post" class="apiForm">
+	<input name="api" type="hidden" class="form-control" value="kiosk">
+	<input name="request" type="hidden" class="form-control" value="remoteControl">
+	<input name="output" type="hidden" class="form-control" value="json">
+  <div class="form-group">
+    <input type="text" class="form-control" name="name" id="kioskNameInput" placeholder="Kiosk name">
+  </div>
+  <div class="form-group row">
+  	<label class="col-md-4">
+	    <input type="radio" name="css-rotation" class="form-control" value="0" id="inputRotation0" checked>
+	    No rotation
+	  </label>
+    <label class="col-md-4">
+	    <input type="radio" name="css-rotation" class="form-control" value="CW" id="inputRotationCW">
+	    Clockwise rotation
+	  </label>
+	  <label class="col-md-4">
+	    <input type="radio" name="css-rotation" class="form-control" value="CCW" id="inputRotationCCW">
+	    Counter Clockwise Rotation
+	  </label>
+  </div>
+
+
+  <div class="form-group row">
+  	<label class="col-md-4">
+	    <input type="text" name="css-width" class="form-control"  id="inputCssWidth" placeholder="width in px">
+	  </label>
+  	<label class="col-md-4">
+	    <input type="text" name="css-top" class="form-control"  id="inputCssTop" placeholder="top Position in px">
+	  </label>
+    <label class="col-md-4">
+	    <input type="text" name="css-left" class="form-control" id="inputCssLeft" placeholder="left Position in px">
+	  </label>
+	  
+	  
+  </div>
+  <div class="form-group">
+  	<label for="inputCssCustom">
+	  Custom Css as JSON
+	  </label>
+  	<textarea name="css-custom" class="form-control" id="inputCssCustom"></textarea>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+<hr>
+<div class="row">
+	<div class="col-md-4">
+		<form id="refreshForm" class="form-inline apiForm" role="form" action="{$api_address}/kiosk/remoteControl.json">
+			<input type="hidden" name="refresh" value="true">
+		  <button type="submit" class="btn btn-default">Refresh Kiosk</button>
+		</form>
+	</div>
+	<div class="col-md-4">
+		<form id="showIPForm" class="form-inline apiForm" role="form" action="{$api_address}/kiosk/remoteControl.json">
+			<input type="hidden" name="showIP" value="true">
+		  <button type="submit" class="btn btn-default">Show Ip</button>
+		</form>
+	</div>
+	<div class="col-md-4">
+		<form id="hideIPForm" class="form-inline apiForm" role="form" action="{$api_address}/kiosk/remoteControl.json">
+			<input type="hidden" name="showIP" value="false">
+		  <button type="submit" class="btn btn-default">Hide Ip</button>
+		</form>
+	</div>
+</div>
+
+<div id="response">
+	
+</div>
+<script type="text/javascript">
+	var initialTime  = {$initial_time};
+	var api_adrress  = "{$api_address}";
+	var restFulLinks = "{$restful_links}"; 
+	initForms();
+</script>
+</body>
+</html>

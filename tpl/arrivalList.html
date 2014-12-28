@@ -1,0 +1,26 @@
+<table class="arrivalsList table table-condensed">
+	<thead>
+		<th class="arrival descriptor">{$_arrivals_time}</th>
+		<th class="name descriptor">{$_arrivals_name}</th>
+		<th class="status descriptor">{$_arrivals_status}</th>
+	</thead>
+	<tbody>
+	{loop="$$GLOBALS.tplMessage"}
+		<tr id="arrival{$key}">
+			<td class="arrival">{$value.time|stDate:'H:i'}</td>
+			<td class="name">{$value.name}</td>
+			<td class="status">
+				{if="$value.status == 0"}
+					{if="$value.time < time()"}
+					delay
+					{else}
+					on flight
+					{/if}
+				{else}
+					arrived
+				{/if}
+			</td>
+		</tr>
+	{/loop}
+	</tbody>
+</table>

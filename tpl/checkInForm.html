@@ -1,0 +1,12 @@
+<form id="announceForm" action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+	<h2>{$_check_in}</h2>
+	<div class="form-group">
+		<input name="name" type="text" class="form-control" required autofocus placeholder="{$_name_request}">
+		<input name="api" type="hidden" class="form-control" value="arrivals">
+		<input name="request" type="hidden" class="form-control" value="announce">
+		<input name="output" type="hidden" class="form-control" value="html">
+		<input name="replace" type="hidden" class="form-control" value="announceForm">
+		<input name="show_arrival_form" type="hidden" class="form-control" value="true">
+		<input name="announce" type="submit" value="I'd love to come" class="btn btn-default">
+	</div>
+</form>
