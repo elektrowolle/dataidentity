@@ -124,9 +124,8 @@ function write(){
 // function apiRequest (request, args) {
 // 	var requestAddress = "";
 
-// 		requestAddress = api_adrress 
-// 			+ "?requestedApi=" + api
-// 			+ "&request=" + request
+// 		requestAddress = api
+// 			+ "?request=" + request
 	
 // 	var type =  "post";
 // 	var args =  (typeof args != "undefined") ? args : "";
@@ -136,7 +135,7 @@ function write(){
 // 	$ajax = $.ajax({
 // 		url     : requestAddress,
 // 		type    : type,
-// 		dataType: json,
+// 		dataType: "json",
 // 		data    : {"args": args}
 // 		});
 
