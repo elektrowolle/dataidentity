@@ -1,17 +1,16 @@
 <?php
-include_once 'inc.__dataRow.class.php';
-include_once 'inc.dataset.class.php';
-include_once 'inc.attribute.class.php';
+include_once 'inc.__datarow.class.php';
 /**
 * 
 */
-class data extends __dataRow
+class data extends __DataRow
 {
 	var $id; 
 	var $dataset; 
 	var $attribute; 
 	var $value; 
 	var $time; 
+
 	function __construct($id)
 	{
 		# code...
@@ -19,9 +18,9 @@ class data extends __dataRow
 
 	public function save()
 	{
-		$row["dataset"] = $this->dataset->id;
+		$row["dataset"]   = $this->dataset->id;
 		$row["attribute"] = $this->attribute->id;
-		$row["value"] = $this->value;
-		$row["time"] = $this->time;
+		$row["value"]     = $this->value;
+		$row["time"]      = $this->time;
 	}
 }

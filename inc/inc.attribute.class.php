@@ -1,9 +1,9 @@
 <?php
-include_once 'inc.__dataRow.class.php';
+include_once 'inc.__datarow.class.php';
 /**
 * 
 */
-class Attribute extends __dataRow
+class Attribute extends __DataRow
 {
 	var $id;
 	var $name;

@@ -11,8 +11,6 @@ class View {
 	function __construct($viewName ='', $args = '', $update = false) {
 		$usedName = ($viewName == '' ? 'default': $viewName);
 		$this->view = View::loadView($usedName, $args, $update);
-
-
 	}
 
 	public function draw($tpl) {

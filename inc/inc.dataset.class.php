@@ -1,12 +1,13 @@
 <?php
-include_once 'inc.__dataRow.class.php';
-include_once 'inc.entity.class.php';
-include_once 'inc.data.class.php';
+include_once 'inc.__datarow.class.php';
 /**
 * 
 */
 class Dataset extends __DataRow
 {
+
+	static $table = 'di.dataset';
+
 	var $id;
 	var $entity;
 	var $data = array();

@@ -1,16 +1,16 @@
 <?php
-include_once 'inc.__dataRow.class.php';
+include_once 'inc.__datarow.class.php';
 /**
 * 
 */
-class EntityData extends __dataRow
+class EntityData extends __DataRow
 {
 	var $id;
 	var $entity;
 	var $attribute;
 	var $defaultValue;
 
-	function __construct($id)
+	function __construct($id = null)
 	{
 		# code...
 	}
