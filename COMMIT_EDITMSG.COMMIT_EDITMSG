@@ -1,0 +1,737 @@
+Even more working
+
+# --------------
+# Please enter the commit message for your changes. Everything below
+# this paragraph is ignored, and an empty message aborts the commit.
+# Just close the window to accept your message.
+diff --git a/.DS_Store b/.DS_Store
+index 5fed128..90e8cff 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/conf.php b/conf.php
+index d3ea79a..6a3d1f1 100644
+--- a/conf.php
++++ b/conf.php
+@@ -1,5 +1,12 @@
+ <?php
+ date_default_timezone_set("Europe/Berlin");
++
++include_once 'inc/inc.entity.class.php';
++include_once 'inc/inc.dataset.class.php';
++include_once 'inc/inc.entitydata.class.php';
++include_once 'inc/inc.attribute.class.php';
++include_once 'inc/inc.data.class.php';
++
+ include_once "util.php";
+ //////INDEPENDENCIES
+ $libDirectory = 'libs/';
+@@ -16,13 +23,19 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+ $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+ $db  = new NotORM($pdo);
+ 
++$datasetTable    = $db->{"di.dataset"}();
++$entityTable     = $db->{"di.entity"}();
++$entitydataTable = $db->{"di.entitydata"}();
++$attributeTable  = $db->{"di.attribute"}();
++$dataTable       = $db->{"di.data"}();
++$options         = $db->{'\'di.options\''}();
++
+ //////LANG _DE
+ $config['default_language'] = 'de';
+ include_once 'lang.php';
+ 
+ $lang = initLang($config['lang'], $config['default_language'])[$config['default_language']];
+ 
+-
+ //////Different Stuff
+ 
+ $config['googleApiKey'] = '';
+@@ -30,7 +43,7 @@ $config['googleApiKey'] = '';
+ $config['debug'] = true;
+ 
+ $config['webAddress']        = 'http://whosthere.hausnr11.de/';
+-$config['path']              = '/whosthere/';
++$config['path']              = '/';
+ $config['apiAddressRestful'] = $config['path'] . 'api/v0';
+ $config['apiAddress']        = $config['apiAddressRestful']; //*/$config['path'] . 'api.php';
+ 
+@@ -43,7 +56,7 @@ $config['restFulLinks']  = "true";
+ $kiosk = array();
+ $kiosk['width']    = '500';
+ $kiosk['rotation'] = '0';
+-$config['kiosk'] = $kiosk;
++$config['kiosk']   = $kiosk;
+ 
+ 
+ raintpl::$base_url     = $config['path']  ;
+diff --git a/di b/di
+index a31769e..ce7964e 100644
+Binary files a/di and b/di differ
+diff --git a/inc/.DS_Store b/inc/.DS_Store
+new file mode 100644
+index 0000000..e60b17b
+Binary files /dev/null and b/inc/.DS_Store differ
+diff --git a/inc/inc.__datarow.class.php b/inc/inc.__datarow.class.php
+index 8b624dd..87b0f1a 100644
+--- a/inc/inc.__datarow.class.php
++++ b/inc/inc.__datarow.class.php
+@@ -1,16 +1,55 @@
+ <?php
+-
+ /**
+ * 
+ */
+-abstract class __dataRow
++abstract class __DataRow
+ {
+ 	var $row;
++	static $table;
+ 
+-	function __construct($id)
++	function __DataRow($id)
+ 	{
+-		# code...
++		$className = get_called_class();
++		$this->row = $GLOBALS['db']->{"\"" . $className::$table . "\""}()[$id];
++
+ 	}
+ 
++	function super($id) {
++	    $par = get_parent_class($this);
++	    $className = get_called_class();
++	    $this->ormTable = $GLOBALS['db']->{"\"" . $className::$table . "\""}();
++	    $this->row      = $this->ormTable[$id];
++	    $this->$par($id);
++    }
++
+ 	abstract public function save();
++
++	static public function getAll($where='') {
++		$class = new ReflectionClass(get_called_class());
++		$dbTable = $class->getMethod('getTable')->invoke(null);
++		if($where != '')
++			$dbTable = $dbTable->where($where);
++
++		$result = array();
++
++		try {
++			foreach ($dbTable as $id => $row) {
++				$result[] = ($class->newInstance($id));
++			}
++		} catch (Exception $e) {
++			
++		}
++
++		
++
++		return $result;
++	}
++
++	static public function getTable() {
++		$db = $GLOBALS['db'];
++		$class = new ReflectionClass(get_called_class());
++		$table = (string)$class->getProperty('table')->getValue();
++		echo $table;
++		return $db->{"\"" . $table . "\""}();
++	}
+ }
+\ No newline at end of file
+diff --git a/inc/inc.attribute.class.php b/inc/inc.attribute.class.php
+index 2348d94..15d7fa2 100644
+--- a/inc/inc.attribute.class.php
++++ b/inc/inc.attribute.class.php
+@@ -1,9 +1,9 @@
+ <?php
+-include_once 'inc.__dataRow.class.php';
++include_once 'inc.__datarow.class.php';
+ /**
+ * 
+ */
+-class Attribute extends __dataRow
++class Attribute extends __DataRow
+ {
+ 	var $id;
+ 	var $name;
+@@ -17,4 +17,4 @@ class Attribute extends __dataRow
+ 	{
+ 		$row["name"] = $this->name;
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/inc/inc.data.class.php b/inc/inc.data.class.php
+index 427b40d..0a18fe7 100644
+--- a/inc/inc.data.class.php
++++ b/inc/inc.data.class.php
+@@ -1,17 +1,16 @@
+ <?php
+-include_once 'inc.__dataRow.class.php';
+-include_once 'inc.dataset.class.php';
+-include_once 'inc.attribute.class.php';
++include_once 'inc.__datarow.class.php';
+ /**
+ * 
+ */
+-class data extends __dataRow
++class data extends __DataRow
+ {
+ 	var $id; 
+ 	var $dataset; 
+ 	var $attribute; 
+ 	var $value; 
+ 	var $time; 
++
+ 	function __construct($id)
+ 	{
+ 		# code...
+@@ -19,9 +18,9 @@ class data extends __dataRow
+ 
+ 	public function save()
+ 	{
+-		$row["dataset"] = $this->dataset->id;
++		$row["dataset"]   = $this->dataset->id;
+ 		$row["attribute"] = $this->attribute->id;
+-		$row["value"] = $this->value;
+-		$row["time"] = $this->time;
++		$row["value"]     = $this->value;
++		$row["time"]      = $this->time;
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/inc/inc.dataset.class.php b/inc/inc.dataset.class.php
+index ecab50a..0408495 100644
+--- a/inc/inc.dataset.class.php
++++ b/inc/inc.dataset.class.php
+@@ -1,12 +1,13 @@
+ <?php
+-include_once 'inc.__dataRow.class.php';
+-include_once 'inc.entity.class.php';
+-include_once 'inc.data.class.php';
++include_once 'inc.__datarow.class.php';
+ /**
+ * 
+ */
+ class Dataset extends __DataRow
+ {
++
++	static $table = 'di.dataset';
++
+ 	var $id;
+ 	var $entity;
+ 	var $data = array();
+diff --git a/inc/inc.entity.class.php b/inc/inc.entity.class.php
+index a9a8276..ab88671 100644
+--- a/inc/inc.entity.class.php
++++ b/inc/inc.entity.class.php
+@@ -1,18 +1,24 @@
+ <?php
+-include_once 'inc.__dataRow.class.php';
+-include_once 'inc.entityData.class.php';
++include_once 'inc.__datarow.class.php';
+ /**
+ * 
+ */
+ class Entity extends __DataRow
+ {
++	static $table = "di.entity";
++
++	var $ormTable;
+ 	var $id;
+ 	var $name;
+-	var $entityData       = array();
++	var $entityData = array();
++
+ 
+ 	function __construct($id)
+ 	{
+-		
++		$this->super($id);
++		$this->name       = $this->row['name'      ];
++		$this->id         = $this->row['id'        ];
++		$this->entityData = $this->row['entityData'];
+ 	}
+ 
+ 	public function addAttribute($attribute_id, $defaultValue)
+diff --git a/inc/inc.entitydata.class.php b/inc/inc.entitydata.class.php
+index dd841e3..ff3ed82 100644
+--- a/inc/inc.entitydata.class.php
++++ b/inc/inc.entitydata.class.php
+@@ -1,16 +1,16 @@
+ <?php
+-include_once 'inc.__dataRow.class.php';
++include_once 'inc.__datarow.class.php';
+ /**
+ * 
+ */
+-class EntityData extends __dataRow
++class EntityData extends __DataRow
+ {
+ 	var $id;
+ 	var $entity;
+ 	var $attribute;
+ 	var $defaultValue;
+ 
+-	function __construct($id)
++	function __construct($id = null)
+ 	{
+ 		# code...
+ 	}
+@@ -26,4 +26,4 @@ class EntityData extends __dataRow
+ 		$row["attribute_id"] = $this->attribute->id;
+ 		$row["defaultValue"] = $this->defaultValue;
+ 	}
+-}
+\ No newline at end of file
++}
+diff --git a/install.php b/install.php
+index 319d786..10e028e 100644
+--- a/install.php
++++ b/install.php
+@@ -12,7 +12,7 @@
+ 			. 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+ 			. 'name TEXT NOT NULL); '
+ 
+-			. 'CREATE TABLE IF NOT EXISTS "di.entityData" ( '
++			. 'CREATE TABLE IF NOT EXISTS "di.entitydata" ( '
+ 			. 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+ 			. 'entity_id INTEGER NOT NULL, '
+ 			. 'attribute_id INTEGER NOT NULL, '
+diff --git a/libs/.DS_Store b/libs/.DS_Store
+index 7145b1e..8f1294f 100644
+Binary files a/libs/.DS_Store and b/libs/.DS_Store differ
+diff --git a/libs/notorm/.DS_Store b/libs/notorm/.DS_Store
+index 31934b5..3362d15 100644
+Binary files a/libs/notorm/.DS_Store and b/libs/notorm/.DS_Store differ
+diff --git a/libs/notorm/NotORM/.DS_Store b/libs/notorm/NotORM/.DS_Store
+new file mode 100644
+index 0000000..26f0139
+Binary files /dev/null and b/libs/notorm/NotORM/.DS_Store differ
+diff --git a/tmp/.DS_Store b/tmp/.DS_Store
+new file mode 100644
+index 0000000..5008ddf
+Binary files /dev/null and b/tmp/.DS_Store differ
+diff --git a/tmp/basicHeaders.af3906cfde643ae7f290cfdc51cc9342.rtpl.php b/tmp/basicHeaders.af3906cfde643ae7f290cfdc51cc9342.rtpl.php
+new file mode 100644
+index 0000000..e3e1525
+--- /dev/null
++++ b/tmp/basicHeaders.af3906cfde643ae7f290cfdc51cc9342.rtpl.php
+@@ -0,0 +1,21 @@
++<?php if(!class_exists('raintpl')){exit;}?><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
++<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
++<link rel="stylesheet" type="text/css" href="/tpl/bootstrap-3.1.1-dist/css/bootstrap.css">
++<link rel="stylesheet" type="text/css" href="/tpl/bootstrap-3.1.1-dist/css/bootstrap-theme.css">
++<script src="/tpl/js/apirequest.js"></script>
++<meta name="apple-mobile-web-app-capable" content="yes">
++<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
++<meta name="mobile-web-app-capable" content="yes">
++
++<!-- Latest compiled and minified CSS -->
++<script src="/tpl/js/less-1.7.3.min.js"></script>
++
++<!-- Latest compiled and minified JavaScript -->
++<script src="/tpl/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
++
++<!--<link rel="stylesheet" type="text/css" href="http://necolas.github.io/normalize.css/3.0.1/normalize.css">-->
++
++<link rel="stylesheet" href="/tpl/bootstrap-3.1.1-dist/css/bootstrap-theme.css">
++
++<meta name="viewport" content="width=device-width, initial-scale=1">
++<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+\ No newline at end of file
+diff --git a/tmp/manager.af3906cfde643ae7f290cfdc51cc9342.rtpl.php b/tmp/manager.af3906cfde643ae7f290cfdc51cc9342.rtpl.php
+new file mode 100644
+index 0000000..d19af05
+--- /dev/null
++++ b/tmp/manager.af3906cfde643ae7f290cfdc51cc9342.rtpl.php
+@@ -0,0 +1,49 @@
++<?php if(!class_exists('raintpl')){exit;}?><!DOCTYPE html>
++<html>
++<head>
++	<title><?php echo $title;?></title>
++	
++	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
++	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
++	<?php $tpl = new RainTPL;$tpl->assign( $this->var );$tpl->draw( "basicHeaders" );?>
++
++	</head>
++
++<body>
++<h1>Manager</h1>
++<h2>Entitie Models</h2>
++<h3>Model name: id</h3>
++change name
++<h4>Attributes</h4>
++<table>
++	<thead>
++		<th>name</th>
++		<th>default Value</th>
++		<th>save changes</th>
++	</thead>
++	<tbody>
++		<?php $counter1=-1; if( isset($entities) && is_array($entities) && sizeof($entities) ) foreach( $entities as $key1 => $value1 ){ $counter1++; ?>
++
++		<tr>
++			<td><?php echo $value1->name;?></td>
++		</tr>
++		<?php } ?>
++
++	</tbody>
++</table>
++<h2>Datasets</h2>
++<h3>Entity Name: id</h3>
++change name
++<h4>Data</h4>
++<table>
++<thead>
++	<th>name</th>
++	<th>value</th>
++	<th>last update</th>
++	<th>save changes</th>
++</thead>
++</table>
++<h2>Attributes</h2>
++<h3>Attribute name</h3>
++</body>
++</html>
+\ No newline at end of file
+diff --git a/tpl/default.html b/tpl/default.html
+index 8b17dad..04cb5cc 100644
+--- a/tpl/default.html
++++ b/tpl/default.html
+@@ -14,185 +14,5 @@
+ 
+ <body>
+ 
+-<div data-role="page" id="page" class="container">
+-	
+-	<h1>{$title}</h1>
+-	<p>{$_welcome_message}</p>
+-	<h2>{$_todays_arrivals}</h2>
+-	<div id="todays_arrivals_list">
+-	{"today_arrivals"|setTplMessage}
+-	{include="arrivalList"}
+-	</div>
+-
+-
+-	<div id="statusContainer">
+-	
+-	{if="!$isCheckedIn"}
+-	{include="checkInForm"}
+-	{/if}
+-
+-	{if="$isCheckedIn"}
+-
+-	{/if}
+-
+-	{if="$isArrived"}
+-
+-	{/if}
+-
+-	</div>
+-
+-	<h2>{$_former_arrivals}</h2>
+-	<div id="former_arrivals_list">
+-	{"former_arrivals"|setTplMessage}
+-	{include="arrivalList"}
+-	</div>
+-	<hr>
+-	<div>
+-		<span>at <a href="https://github.com/elektrowolle/whosthere">Github</a></span>
+-	</div>
+-</div>
+-
+-
+-
+-<script type="text/javascript">
+-
+-	var user_position = "{$default_position}";
+-	var server_time   = "{$initial_time}";
+-	var api_adrress   = "{$api_address}";
+-	var restFulLinks  = "{$restful_links}"; 
+-
+-
+-{if="$locationIsNeeded"}
+-function getLocation () {
+-	if(navigator.geolocation){
+-		navigator.geolocation.getCurrentPosition(successCallback,errorCallback,{timeout:10000});
+-
+-		function successCallback (position) {
+-			user_position = 
+-				position.coords.latitude 
+-				+ "," 
+-				+ position.coords.longitude ;
+-
+-			setUserPositionUnputField();
+-		}
+-
+-		function errorCallback (events) {
+-			setUserPositionUnputField();
+-		}
+-	}
+-}
+-
+-function setUserPositionUnputField () {
+-	if($("#userPositionInput").length == 0)
+-		$("#announceForm").append("<input id=\"userPositionInput\" name=\"location\" type=\"hidden\" value=\"" + user_position + "\">");
+-	else
+-		$("#userPositionInput").attr("value", user_position);
+-}
+-
+-
+-{/if}
+-
+-	var posting;
+-
+-	$(document).ready(function(event){
+-
+-
+-		getLocation();
+-
+-		if ((typeof localStorage.arrival_id) != "undefined" && localStorage.arrival_id != "null") {
+-			if(gup("arrived") == "true"){
+-				var updateFormArgs = {"id":localStorage.arrival_id, "arrived": true};
+-				apiRequest("arrivals", "updateArrival", "html", updateFormArgs)
+-							.done(function (form) {
+-
+-					$("#announceForm").html(form);
+-				});
+-			}else{
+-
+-				var arrivalArgs = {"id":localStorage.arrival_id};
+-				console.debug("storaged id");
+-				
+-				
+-				
+-					apiRequest("arrivals", "getArrival", "json", arrivalArgs).done(function (results) {
+-						console.debug("results");
+-						console.debug(results);
+-						saveInLocalStorage(results.localStorage);
+-
+-					if(localStorage.lastChecked_in > results.today){
+-						if (localStorage.arrived == "1") {
+-							var updateFormArgs = {"id":localStorage.arrival_id};
+-							apiRequest("arrivals", "getArrivalMessage", "html", updateFormArgs)
+-									.done(function (form) {
+-
+-								$("#announceForm").html(form);
+-							});
+-						}else{
+-							var updateFormArgs = {"id":localStorage.arrival_id}	;
+-
+-							apiRequest("arrivals", "getUpdateForm", "html", updateFormArgs)
+-									.done(function (form) {
+-
+-								$("#announceForm").html(form);
+-							});
+-						}
+-					}else{ //localStorage.lastChecked_in < results.today
+-						$("#announceForm input[name=name]").val(localStorage.name);
+-					}
+-				});
+-			}
+-		}
+-	});
+-
+-	function update () {
+-		console.debug("Start update");
+-		
+-		getNewArrivals();
+-		getFormerArrivals();
+-
+-		console.debug("Display updated");
+-	}
+-
+-	$("#announceForm").submit(function (event) {
+-		event.preventDefault();
+-		var $form     = $( this );
+-		
+-		localStorage["name"] = $form.find("[name=name]").val();
+-	});
+-
+-	function getNewArrivals () {
+-		var $todaysList = $("#todays_arrivals_list");
+-		apiRequest("arrivals", "show", "html", "").done(function(data) {
+-		    $todaysList.html(data);
+-		    console.debug("Got new arrivals");
+-		});
+-	}
+-
+-	function getFormerArrivals () {
+-		var $formerList = $("#former_arrivals_list");
+-		var args        = JSON.stringify({"filter": "former"});
+-		
+-		apiRequest("arrivals", "show", "html", args).done(function(data) {
+-		    $formerList.html(data);
+-		    console.debug("Got former arrivals");
+-		 });
+-	}
+-
+-	function gup( name ){
+-		name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+-		
+-		var regexS  = "[\\?&]"+name+"=([^&#]*)";
+-		var regex   = new RegExp( regexS );
+-		var results = regex.exec( window.location.href ); 
+-		
+-		if( results == null ) 
+-			return "";
+-		else 
+-			return results[1];
+-	}
+-
+-	initForms();
+-	setInterval(update, 5000);
+-</script>
+ </body>
+ </html>
+diff --git a/tpl/manager.html b/tpl/manager.html
+new file mode 100644
+index 0000000..32d3756
+--- /dev/null
++++ b/tpl/manager.html
+@@ -0,0 +1,46 @@
++<!DOCTYPE html>
++<html>
++<head>
++	<title>{$title}</title>
++	
++	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
++	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
++	{include="basicHeaders"}
++	</head>
++
++<body>
++<h1>Manager</h1>
++<h2>Entitie Models</h2>
++<h3>Model name: id</h3>
++change name
++<h4>Attributes</h4>
++<table>
++	<thead>
++		<th>name</th>
++		<th>default Value</th>
++		<th>save changes</th>
++	</thead>
++	<tbody>
++		{loop="$entities"}
++		<tr>
++			<td>{$value->name}</td>
++		</tr>
++		{/loop}
++	</tbody>
++</table>
++<h2>Datasets</h2>
++<h3>Entity Name: id</h3>
++change name
++<h4>Data</h4>
++<table>
++<thead>
++	<th>name</th>
++	<th>value</th>
++	<th>last update</th>
++	<th>save changes</th>
++</thead>
++</table>
++<h2>Attributes</h2>
++<h3>Attribute name</h3>
++</body>
++</html>
+\ No newline at end of file
+diff --git a/view/view._views.php b/view/view._views.php
+index ecfcb39..6dfc5bc 100644
+--- a/view/view._views.php
++++ b/view/view._views.php
+@@ -3,5 +3,6 @@
+ include_once 'view.default.php';
+ include_once 'view.kiosk.php';
+ include_once 'view.kiosk.rc.php';
++include_once 'view.manager.php';
+ 
+ ?>
+\ No newline at end of file
+diff --git a/view/view.class.php b/view/view.class.php
+index c925299..15b957f 100644
+--- a/view/view.class.php
++++ b/view/view.class.php
+@@ -11,8 +11,6 @@ class View {
+ 	function __construct($viewName ='', $args = '', $update = false) {
+ 		$usedName = ($viewName == '' ? 'default': $viewName);
+ 		$this->view = View::loadView($usedName, $args, $update);
+-
+-
+ 	}
+ 
+ 	public function draw($tpl) {
+diff --git a/view/view.default.php b/view/view.default.php
+index af5ed2f..f7350be 100644
+--- a/view/view.default.php
++++ b/view/view.default.php
+@@ -8,42 +8,7 @@ include_once 'view._module.php';
+ class DefaultView extends ViewModule {
+ 
+ 	public function update() {
+-		$today        = new DateTime();
+-		$historicDate = $GLOBALS['historicDate'];
+-		$lang         = $GLOBALS['lang'];
+-		$db           = $GLOBALS['db'];
+-
+-		$today       ->setTime(0,0,0);
+-		$historicDate->sub($GLOBALS['config']['historic_arrivals_interval']);
+-
+-		//print_r($_COOKIE);
+-
+-		//USER DATA
+-		$isCheckedIn = isset($this->cookies['lastCheckedIn']) && $this->cookies['lastCheckedIn'] > $today;
+-
+-		$this->setContent('isCheckedIn',      $isCheckedIn);
+-		$this->setContent('isArrived',        !empty($_COOKIE['isArrived']) && $_COOKIE['isArrived']);
+-		$this->setContent('locationIsNeeded', !$isCheckedIn);
+-		$this->setContent('isKioskMode',      !empty($_GET['kioskMode']) && $_GET['kioskMode'] == 'true');
+-		$this->setContent('user_name',        !empty($_COOKIE['name']) ? $_COOKIE['name'] : $lang['_name_request']);
+-
+-		//Arrivals
+-		$todayArrivalQuery = $db
+-			->{'\'whosthere.sqlite.visitorLog\''}()
+-			->where('time > ' . $today->getTimestamp());
+-
+-		$today_arrivals = queryToArray($todayArrivalQuery);
+-
+-		$formerArrivalsQuery = $db
+-			->{'\'whosthere.sqlite.visitorLog\''}()
+-			->where('time < ' . $today->getTimestamp() . ' AND time > ' . $historicDate->getTimestamp());
+-
+-		$former_arrivals = queryToArray($formerArrivalsQuery);
+-
+-
+-		$this->setContent('today_arrivals' , $today_arrivals);
+-		$this->setContent('former_arrivals', $former_arrivals);
+-		$this->setContent('initial_time'   , time());
++		
+ 
+ 		//$tpl->draw('start');
+ 	}
+diff --git a/view/view.manager.php b/view/view.manager.php
+new file mode 100644
+index 0000000..5a984fc
+--- /dev/null
++++ b/view/view.manager.php
+@@ -0,0 +1,19 @@
++<?php
++include_once 'view._module.php';
++/**
++* 
++*/
++class ManagerView extends ViewModule {
++	
++	var $entitties;
++	var $datasets;
++	var $attributes;
++
++	public function update()
++	{
++		$entities = Entity::getAll();
++		$this->setContent('entities', $entities);
++	}
++}
++
++View::registerView('ManagerView', 'manager', 'manager');

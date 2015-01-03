@@ -37,6 +37,7 @@ if(!empty($_POST['request']))
 	$request = $_POST['request'];
 
 
+
 $api = new API($tpl, $output);
 
 
@@ -48,4 +49,3 @@ try{
 }catch(Excetion $e){
 	$api->get('error', print_r($e, true)); 
 }
-?>
