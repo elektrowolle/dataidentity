@@ -11,8 +11,13 @@ class ManagerView extends ViewModule {
 
 	public function update()
 	{
-		$entities = Entity::getAll();
+		$entities   = Entity::getAll();
+		$datasets   = Dataset::getAll();
+		$attributes = Attribute::getAll();
+
 		$this->setContent('entities', $entities);
+		$this->setContent('attributes', $attributes);
+		$this->setContent('datasets', $datasets);
 	}
 }
 

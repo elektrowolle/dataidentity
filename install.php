@@ -4,34 +4,34 @@
 	try {
 		$pdo = new PDO($config['db_name']);
 		$query = 
-			'CREATE TABLE IF NOT EXISTS "di.dataset" ( '
+			'CREATE TABLE IF NOT EXISTS "dataset" ( '
 			. 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-			. 'entity_id INTEGER NOT NULL); '
+			. 'entity_id INTEGER); '
 
-			. 'CREATE TABLE IF NOT EXISTS "di.entity" ( '
+			. 'CREATE TABLE IF NOT EXISTS "entity" ( '
 			. 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-			. 'name TEXT NOT NULL); '
+			. 'name TEXT); '
 
-			. 'CREATE TABLE IF NOT EXISTS "di.entitydata" ( '
+			. 'CREATE TABLE IF NOT EXISTS "entitydata" ( '
 			. 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-			. 'entity_id INTEGER NOT NULL, '
-			. 'attribute_id INTEGER NOT NULL, '
-			. 'defaultValue TEXT NOT NULL); '
+			. 'entity_id INTEGER, '
+			. 'attribute_id INTEGER, '
+			. 'defaultValue TEXT); '
 
-			. 'CREATE TABLE IF NOT EXISTS "di.attribute" ( '
+			. 'CREATE TABLE IF NOT EXISTS "attribute" ( '
 			. 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-			. 'name TEXT NOT NULL); '
+			. 'name TEXT); '
 			
-			. 'CREATE TABLE IF NOT EXISTS "di.data" ( '
+			. 'CREATE TABLE IF NOT EXISTS "data" ( '
 			. 'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-			. 'dataset_id INTEGER NOT NULL, '
-			. 'attribute_id INTEGER NOT NULL, '
-			. 'value TEXT NOT NULL, '
-			. 'time INTEGER NOT NULL); '
+			. 'dataset_id INTEGER, '
+			. 'attribute_id INTEGER, '
+			. 'value TEXT, '
+			. 'time INTEGER); '
 
-			. 'CREATE TABLE IF NOT EXISTS "di.options" ( '
+			. 'CREATE TABLE IF NOT EXISTS "options" ( '
 			. 'id TEXT PRIMARY KEY, '
-			. 'value TEXT NOT NULL); ';
+			. 'value TEXT); ';
 		;
 
 		print($query);

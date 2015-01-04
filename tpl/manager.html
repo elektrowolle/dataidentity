@@ -1,46 +1,224 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{$title}</title>
-	
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	{include="basicHeaders"}
-	</head>
+  <title>{$title}</title>
+  
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  {include="basicHeaders"}
+  </head>
 
 <body>
-<h1>Manager</h1>
-<h2>Entitie Models</h2>
-<h3>Model name: id</h3>
-change name
-<h4>Attributes</h4>
-<table>
-	<thead>
-		<th>name</th>
-		<th>default Value</th>
-		<th>save changes</th>
-	</thead>
-	<tbody>
-		{loop="$entities"}
-		<tr>
-			<td>{$value->name}</td>
-		</tr>
-		{/loop}
-	</tbody>
-</table>
-<h2>Datasets</h2>
-<h3>Entity Name: id</h3>
-change name
-<h4>Data</h4>
-<table>
-<thead>
-	<th>name</th>
-	<th>value</th>
-	<th>last update</th>
-	<th>save changes</th>
-</thead>
-</table>
-<h2>Attributes</h2>
-<h3>Attribute name</h3>
+<div data-role="page" id="page" class="container">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Manager</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li id="datasetsLi" class="navTab active"><a href="javascript:void(0)" onclick="showDatasets()" role="button">Datasets <span class="sr-only">(current)</span></a></li>
+        <li id="entitiesLi" class="navTab"><a href="javascript:void(0)" onclick="showEntities()" role="button">Entities</a></li>
+        <li id="attributesLi" class="navTab"><a href="javascript:void(0)" onclick="showAttributes()" role="button">Attributes</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div id="datasets">
+  <h2>Datasets <span class="label label-default" onclick="">add</span></h2>
+  {loop="$datasets"}
+  <h3>Entity {$value->id}</h3>
+    {loop="$value->data"}
+      <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon">{$value->attribute->name}</span>
+            <input class="form-control" value="{$value->defaultValue}">
+
+            <div class="input-group-btn">
+
+                <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                </button>
+
+                <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                </button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    {/loop}
+  {/loop}
+</div>
+
+<div id="entities">
+  <h2>Entity Models</h2>
+  {loop="$entities"}
+  <h3>Model name: {$value->name} <span class="label label-default" onclick="$('#entitynameform{$value->id}').show()">change</span></h3>
+
+  <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+    <div id="entitynameform{$value->id}" class="input-group" onload="$('#entitynameform{$value->id}').hide()">
+      
+      <input class="form-control" placeholder="new name">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default btn">
+          <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+        </button>
+      </span>
+    </div>
+  </form>
+  <h4>Attributes</h4>
+
+  <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+    <div class="form-group">
+      <div class="input-group">
+
+        <div class="input-group-btn">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">New Attribute<span class="caret"></span></button>
+          <ul class="dropdown-menu" role="menu">
+            {loop="$attributes"}
+            <li><a href="#">{$value->name}</a></li>
+            {/loop}
+          </ul>
+        </div>
+        <span class="input-group-addon">Default Value:</span>
+        <input class="form-control" placeholder="New default view for attribute">
+
+        <div class="input-group-btn">
+
+          <button type="button" class="btn btn-default">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+
+    {loop="$value->entityData"}
+      <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+        <div class="form-group">
+          <div class="input-group">
+
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{$value->attribute->name} <span class="caret"></span></button>
+              <ul class="dropdown-menu" role="menu">
+                {loop="$attributes"}
+                <li><a href="#">{$value->name}</a></li>
+                {/loop}
+              </ul>
+            </div>
+            <span class="input-group-addon">Default Value:</span>
+            <input class="form-control" value="{$value->defaultValue}">
+
+            <div class="input-group-btn">
+
+                <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                </button>
+
+                <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                </button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    {/loop}
+
+  {/loop}
+</div>
+
+<div id="attributes">
+  <h2>Attributes</h2>
+  <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+    <div class="form-group">
+      <div class="input-group">
+        <input class="form-control" placeholder="New Name">
+
+        <div class="input-group-btn">
+
+          <button type="button" class="btn btn-default">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </form>
+
+  {loop="$attributes"}
+    <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+      <div class="form-group">
+        <div class="input-group">
+          <input class="form-control" value="{$value->name}">
+
+          <div class="input-group-btn">
+
+            <button type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            </button>
+
+            <button type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {/loop}
+</div>
+
+
+
+<script type="text/javascript">
+  var datasetC      = $("#datasets");
+  var datasetNav    = $("#datasetsLi");
+  var entitiesC     = $("#entities");
+  var entitiesNav   = $("#entitiesLi");
+  var attributesC   = $("#attributes");
+  var attributesNav = $("#attributesLi");
+  var navTabs       = $(".navTab");
+  
+  onload = function (argument) {
+    showDatasets();
+  }
+
+  showDatasets = function (argument) {
+    datasetC.show();
+    entitiesC.hide();
+    attributesC.hide();
+    navTabs.removeClass("active");
+    datasetNav.addClass("active");
+  }
+  showEntities = function (argument) {
+    datasetC.hide();
+    entitiesC.show();
+    attributesC.hide();
+    navTabs.removeClass("active");
+    entitiesNav.addClass("active");
+  }
+  showAttributes = function (argument) {
+    datasetC.hide();
+    entitiesC.hide();
+    attributesC.show();
+    navTabs.removeClass("active");
+    attributesNav.addClass("active");
+  }
+</script>
 </body>
 </html>

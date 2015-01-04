@@ -4,26 +4,43 @@ include_once 'inc.__datarow.class.php';
 * 
 */
 class EntityData extends __DataRow
-{
-	var $id;
-	var $entity;
-	var $attribute;
-	var $defaultValue;
+{ 
+  static $table = "entitydata";
 
-	function __construct($id = null)
-	{
-		# code...
-	}
+  var $entity;
+  var $attribute;
+  var $defaultValue;
 
-	static public function makeEntityData($entity_id, $attribute_id, $defaultValue)
-	{
-		///return new EntityData();
-	}
+  function __construct($id = null, $entity = null, $attribute = null)
+  {
+    $this->super($id);
+    $this->entity    = $entity == null ?
+           new Entity((string) $this->row->entity) :
+           $entity;
 
-	public function save()
-	{
-		$row["entity_id"]    = $this->entity   ->id;
-		$row["attribute_id"] = $this->attribute->id;
-		$row["defaultValue"] = $this->defaultValue;
-	}
+    $this->attribute = $attribute == null ?
+           new Attribute((string) $this->row->attribute) :
+           $attribute;
+
+    $this->defaultValue  = $this->row["defaultvalue"];
+  }
+
+  public function save()
+  {
+    $row["entity_id"]    = $this->entity   ->id;
+    $this->entity->save();
+
+    $row["attribute_id"] = $this->attribute->id;
+    $this->attribute->save();
+
+    $row["defaultvalue"] = $this->defaultValue;
+  }
+
+  public function newEmpty(){
+    return $this->ormTable->insert(array(
+      'dataset_id'   => null, 
+      'attribute_id' => null,
+      'defaultValue' => null
+      ));
+  }
 }

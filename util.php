@@ -85,4 +85,8 @@
 		}
 	}
 
+	function isDebug() {
+		return $GLOBALS["config"]["debug"];
+	}
+
 ?>

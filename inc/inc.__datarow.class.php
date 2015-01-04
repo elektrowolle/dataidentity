@@ -4,52 +4,64 @@
 */
 abstract class __DataRow
 {
-	var $row;
-	static $table;
+  var $row;
+  var $id;
+  static $table;
 
-	function __DataRow($id)
-	{
-		$className = get_called_class();
-		$this->row = $GLOBALS['db']->{"\"" . $className::$table . "\""}()[$id];
+  function __DataRow($id)
+  {
+    // $this->row = $this->getTable()[$id];
 
-	}
+  }
 
-	function super($id) {
-	    $par = get_parent_class($this);
-	    $className = get_called_class();
-	    $this->ormTable = $GLOBALS['db']->{"\"" . $className::$table . "\""}();
-	    $this->row      = $this->ormTable[$id];
-	    $this->$par($id);
+  function super($id = null) {
+    $par = get_parent_class($this);
+    $className = get_called_class();
+    $this->ormTable = $this->getTable();
+    
+    if(!isset($id) || $id == null){
+      error_log("new row");
+      $this->row = $this->newEmpty();
+      $this->id = (string) $this->row;
+    }else{
+      error_log("load row");
+      $this->id   = $id;
+      $this->row  = $this->ormTable[$id];
+    }
+    // $this->$par($id);
+
+    if(isdebug()) error_log("new " . $className . "@" . $this->id);
+
+  }
+
+  abstract public function save();
+  abstract public function newEmpty();
+
+  static public function getAll($where='') {
+    $className = get_called_class();
+     $class = new ReflectionClass(get_called_class());
+    // $dbTable = $class->getMethod('getTable')->invoke(null);
+    $dbTable = $className::getTable();
+    if($where != '')
+      $dbTable = $dbTable->where($where);
+
+    $result = array();
+
+    try {
+      foreach ($dbTable as $id => $row) {
+        $result[] = ($class->newInstance($id));
+      }
+    } catch (Exception $e) {
+      error_log("catched" . $e);
     }
 
-	abstract public function save();
 
-	static public function getAll($where='') {
-		$class = new ReflectionClass(get_called_class());
-		$dbTable = $class->getMethod('getTable')->invoke(null);
-		if($where != '')
-			$dbTable = $dbTable->where($where);
+    return $result;
+  }
 
-		$result = array();
-
-		try {
-			foreach ($dbTable as $id => $row) {
-				$result[] = ($class->newInstance($id));
-			}
-		} catch (Exception $e) {
-			
-		}
-
-		
-
-		return $result;
-	}
-
-	static public function getTable() {
-		$db = $GLOBALS['db'];
-		$class = new ReflectionClass(get_called_class());
-		$table = (string)$class->getProperty('table')->getValue();
-		echo $table;
-		return $db->{"\"" . $table . "\""}();
-	}
+  static public function getTable() {
+    $db = $GLOBALS['db'];
+    $className = get_called_class();
+    return $db->{$className::$table}();
+  }
 }

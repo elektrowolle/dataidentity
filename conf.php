@@ -23,6 +23,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
 $db  = new NotORM($pdo);
 
+
 $datasetTable    = $db->{"di.dataset"}();
 $entityTable     = $db->{"di.entity"}();
 $entitydataTable = $db->{"di.entitydata"}();
@@ -41,6 +42,8 @@ $lang = initLang($config['lang'], $config['default_language'])[$config['default_
 $config['googleApiKey'] = '';
 
 $config['debug'] = true;
+
+$db->debug = $config['debug'];
 
 $config['webAddress']        = 'http://whosthere.hausnr11.de/';
 $config['path']              = '/';
