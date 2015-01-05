@@ -27,20 +27,27 @@ class EntityData extends __DataRow
 
   public function save()
   {
-    $row["entity_id"]    = $this->entity   ->id;
-    $this->entity->save();
+    $this->row->entity    = $this->entity   ->row;
+    $this->row->attribute = $this->attribute->row;
 
-    $row["attribute_id"] = $this->attribute->id;
-    $this->attribute->save();
-
-    $row["defaultvalue"] = $this->defaultValue;
+    $this->row["defaultvalue"] = $this->defaultValue;
+    $this->row->update();
   }
 
   public function newEmpty(){
     return $this->ormTable->insert(array(
-      'dataset_id'   => null, 
+      'entity_id'   => null, 
       'attribute_id' => null,
-      'defaultValue' => null
+      'defaultvalue' => null
       ));
+  }
+
+  public function asArray()
+  {
+    return array(
+      'id'           => $this->id, 
+      'name'         => $this->attribute->name,
+      'defaultValue' => $this->defaultValue
+    );
   }
 }

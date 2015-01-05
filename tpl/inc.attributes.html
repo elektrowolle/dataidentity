@@ -1,0 +1,39 @@
+<div id="attributes">
+  <h2>Attributes</h2>
+  <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+    <div class="form-group">
+      <div class="input-group">
+        <input class="form-control" placeholder="New Name">
+
+        <div class="input-group-btn">
+
+          <button type="button" class="btn btn-default">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </form>
+
+  {loop="$attributes"}
+    <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+      <div class="form-group">
+        <div class="input-group">
+          <input class="form-control" value="{$value->name}">
+
+          <div class="input-group-btn">
+
+            <button type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            </button>
+
+            <button type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {/loop}
+</div>

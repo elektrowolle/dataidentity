@@ -27,8 +27,17 @@ class Entity extends __DataRow
 
   public function addAttribute($attribute_id, $defaultValue)
   {
-    $newData = entityData::makeEntityData($this->id, $attribute_id, $defaultValue);
+    $newData = new EntityData(
+                  null, 
+                  $this, 
+                  new Attribute($attribute_id)
+                  );
+    // error_log(print_r($newData, true));
+
+    $newData->defaultValue = $defaultValue;
+    $newData->save();
     $this->entityData[$newData->id] = $newData;
+
   }
 
   public function removeAttribute($attribute_id)
@@ -48,7 +57,9 @@ class Entity extends __DataRow
 
   public function save()
   {
-    $row["name"] = $this->id;
+    $this->row["name"] = $this->name;
+    $this->row->update();
+
     foreach ($this->entityData as $key => $value) {
       $value->save();
     }
@@ -58,6 +69,20 @@ class Entity extends __DataRow
     return $this->ormTable->insert(array(
       'name' => null,
     ));
+  }
+
+  public function asArray()
+  {
+    $attributes = array();
+    foreach ($this->entityData as $key => $value) {
+      $attributes[$key] = $value->asArray();
+    }
+
+    return array(
+      'id'         => $this->id, 
+      'name'       => $this->id,
+      'attributes' => $attributes
+    );
   }
 
 }

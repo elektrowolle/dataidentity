@@ -1,0 +1,115 @@
+<div id="entities">
+  <h2>
+    Entity Models
+    <button role="button" class="btn btn-default glyphicon glyphicon-plus" onclick="$('#newEntityForm').toggle()"></button>
+    </h2>
+  <form action="{$api_address}/entities/add.json" method="post" class="form-inline apiForm" role="form">
+  <input name="api"     type="hidden" value="entities">
+  <input name="request" type="hidden" value="changename">
+  <input name="output"  type="hidden" value="json">
+
+    <div id="newEntityForm" class="input-group hide-on-load">
+      <input name="name" class="form-control" placeholder="new name">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default btn" onclick="$(this).closest('form').submit();">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+      </span>
+    </div>
+  </form>
+
+  {loop="$entities"}
+  <h3>
+  Model: {$value->name} 
+    <div class="btn-group" role="group">
+      <button role="button" class="btn btn-default glyphicon glyphicon-refresh" onclick="$('#entitynameform{$value->id}').toggle()"></button> 
+      <button role="button" class="btn btn-default glyphicon glyphicon-minus" onclick="removeModel(this, '{$value->id}')"></button>
+    </div>
+  </h3>
+
+  <form action="{$api_address}/entities/changename.json" method="post" class="form-inline apiForm" role="form">
+    <input type="hidden" name="id" value="{$value->id}">
+    <input name="api" type="hidden" class="form-control" value="entities">
+    <input name="request" type="hidden" class="form-control" value="changename">
+    <input name="output" type="hidden" class="form-control" value="json">
+
+    <div id="entitynameform{$value->id}" class="input-group hide-on-load">
+      <input name="name" class="form-control" placeholder="new name">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default btn" onclick="$(this).closest('form').submit();">
+          <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+        </button>
+      </span>
+    </div>
+  </form>
+  <h4>Attributes</h4>
+
+  <form action="{$api_address}/entities/attribute.json" method="post" class="form-inline apiForm" role="form">
+  <input name="api" type="hidden" value="entities">
+  <input name="request" type="hidden" value="attribute">
+  <input name="output" type="hidden" value="json">
+
+  <input type="hidden" name="id" value="{$value->id}">
+  <input type="hidden" name="operation" value="add">
+  <input type="hidden" name="attribute" value="">
+
+    <div class="form-group">
+      <div class="input-group">
+
+        <div class="input-group-btn">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">New Attribute<span class="caret"></span></button>
+          <ul class="dropdown-menu attribute-selector" role="menu">
+            {loop="$attributes"}
+            <li><a href="javascript:void(0)" onclick="selectAttribute($(this), '{$value->id}', '{$value->name}')">{$value->name}</a></li>
+            {/loop}
+          </ul>
+        </div>
+        <span class="input-group-addon">Default Value:</span>
+        <input name="defaultValue" class="form-control" placeholder="New default view for attribute">
+
+        <div class="input-group-btn">
+
+          <button type="button" class="btn btn-default" onclick="$(this).parents('form').submit();">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+
+    {loop="$value->entityData"}
+      <form action="{$api_address}/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+        <div class="form-group">
+          <div class="input-group">
+
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{$value->attribute->name} <span class="caret"></span></button>
+              <ul class="dropdown-menu" role="menu">
+                {loop="$attributes"}
+                <li><a href="#">{$value->name}</a></li>
+                {/loop}
+              </ul>
+            </div>
+            <span class="input-group-addon">Default Value:</span>
+            <input class="form-control" value="{$value->defaultValue}">
+
+            <div class="input-group-btn">
+
+                <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                </button>
+
+                <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                </button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    {/loop}
+<hr>
+  {/loop}
+</div>

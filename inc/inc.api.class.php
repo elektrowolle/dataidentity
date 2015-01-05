@@ -59,16 +59,6 @@ class API {
 
 	public function output($content)
 	{
-		/*switch ($this->output) {
-			case 'json':
-				$this->jsonOutput($content['content']);
-				break;
-
-			case 'html':
-			default:
-				$this->htmlOutput($content['template'], $content['content'], $content['tplMessage']);
-				break;
-		}*/
 
 		$this->output->setArgument(
 			'content', 

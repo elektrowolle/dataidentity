@@ -43,16 +43,16 @@ $config['googleApiKey'] = '';
 
 $config['debug'] = true;
 
-$db->debug = $config['debug'];
+// $db->debug = $config['debug'];
 
 $config['webAddress']        = 'http://whosthere.hausnr11.de/';
 $config['path']              = '/';
-$config['apiAddressRestful'] = $config['path'] . 'api/v0';
+$config['apiAddressRestful'] = $config['path'] . 'api.php';
 $config['apiAddress']        = $config['apiAddressRestful']; //*/$config['path'] . 'api.php';
 
 
 $config['appCheckinUrl'] = $config['webAddress'] . $config['path'] . '?installApp=true&arrived=true';
-$config['restFulLinks']  = "true";
+$config['restFulLinks']  = "false";
 
 
 //////Kiosk Stuff

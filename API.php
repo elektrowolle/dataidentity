@@ -41,7 +41,15 @@ if(!empty($_POST['request']))
 $api = new API($tpl, $output);
 
 
-if($config['debug'])print_r($_GET);
+if($config['debug']) 
+	error_log(
+		"API REQUEST:" . 
+		print_r($_GET, true)
+	);
+	error_log(
+		"API REQUEST:" . 
+		print_r($_POST, true)
+	);
 
 
 try{
