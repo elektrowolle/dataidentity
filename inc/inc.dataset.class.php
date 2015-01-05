@@ -35,6 +35,14 @@ class Dataset extends __DataRow
     }
   }
 
+  public function delete()
+  {
+    foreach ($tis->data as $key => $value) {
+      $value->delete();
+    }
+    $this->row->delete();
+  }
+
   public function newEmpty(){
     return $this->ormTable->insert(array(
       'entity_id' => null

@@ -35,6 +35,7 @@ abstract class __DataRow
   }
 
   abstract public function save();
+  abstract public function delete();
   abstract public function newEmpty();
 
   static public function getAll($where='') {

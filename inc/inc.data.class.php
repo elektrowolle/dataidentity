@@ -32,6 +32,11 @@ class data extends __DataRow
     $this->row->update();
   }
 
+  public function delete()
+  {
+    $this->row->delete();
+  }
+
   public function newEmpty(){
 
     return $this->ormTable->insert(array(

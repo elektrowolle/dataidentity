@@ -34,6 +34,20 @@ class EntityData extends __DataRow
     $this->row->update();
   }
 
+  public function delete()
+  {
+    foreach ($this->entity->row->dataset() as $key => $datasetRow) {
+      $datasetRow = new DataSet($key);
+      $attributes = $datasetRow->row->data($this->attribute->table . "_id=" . $this->attribute->id);
+      foreach ($data as $key1 => $dataRow) {
+        $data = new Data($key1);
+        $data->delete();
+      }
+    }
+
+    $this->row->delete();
+  }
+
   public function newEmpty(){
     return $this->ormTable->insert(array(
       'entity_id'   => null, 

@@ -21,6 +21,20 @@ class Attribute extends __DataRow
     $row["name"] = $this->name;
   }
 
+  public function delete()
+  {
+    foreach ($this->row->entityData() as $key => $value) {
+      $entityData = new EntityData($key);
+      $entityData->delete();
+    }
+    foreach ($this->row->data() as $key => $value) {
+      $data = new Data($key);
+      $data->delete();
+    }
+
+    $this->row->delete();
+  }
+
   public function newEmpty(){
     return $this->ormTable->insert(array(
       'name' => null,

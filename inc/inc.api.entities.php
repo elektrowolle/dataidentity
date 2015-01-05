@@ -22,7 +22,24 @@
 
       $entity->save();
 
-      $this->setContent('entity', $entity);
+      $this->setContent('entity', $entity->asArray());
+    }
+
+    public function add($value='')
+    {
+      $entity = new Entity(null);
+      $entity->name = $value["name"];
+      $entity->save();
+
+      $this->setContent('entity', $entity->asArray());
+    }
+
+    public function delete($value='')
+    {
+      $entity = new Entity($value["id"]);
+      $entity->delete();
+
+      $this->setContent('empty', 'empty');
     }
 
     public function attribute($value='')
@@ -31,15 +48,15 @@
 
       switch ($value["operation"]) {
         case 'add':
-          $this->addAtribute($entity, $value);
+          $this->addAttribute($entity, $value);
           break;
 
         case 'defaultValue':
-          $this->addAtribute($entity, $value);
+          $this->attributeDefaultValue($entity, $value);
           break;
 
-        case 'removeValue()':
-          $this->addAtribute($entity, $value);
+        case 'delete':
+          $this->deleteAttribute($entity, $value);
           break;
         
         default:
@@ -50,12 +67,27 @@
       error_log(print_r($entity->asArray(),true));
     }
 
-    public function addAtribute($entity, $value='')
+    private function addAttribute($entity, $value='')
     {
-      $entity->addAttribute(
+      $newAttribute = $entity->addAttribute(
             $value["attribute"],
             $value["defaultValue"]
             );
+
+      $this->setContent('attribute', $newAttribute->asArray());
+    }
+    private function attributeDefaultValue($entity, $value='')
+    {
+      $entityData = $entity->entityData[$value['attribute']];
+      $entityData->defaultValue = $value['value'];
+      $entityData->save();
+
+      $this->setContent('attribute', $entityData->asArray());
+    }
+    private function deleteAttribute($entity, $value='')
+    {
+      $entityData = $entity->entityData[$value['attribute']];
+      $entityData->delete();
     }
   }
 

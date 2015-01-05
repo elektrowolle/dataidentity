@@ -37,6 +37,7 @@ class Entity extends __DataRow
     $newData->defaultValue = $defaultValue;
     $newData->save();
     $this->entityData[$newData->id] = $newData;
+    return $this->entityData[$newData->id];
 
   }
 
@@ -65,6 +66,19 @@ class Entity extends __DataRow
     }
   }
 
+  public function delete()
+  {
+    foreach ($this->entityData as $key => $value) {
+      $value->delete();
+    }
+
+    foreach ($this->row->dataset() as $key => $value) {
+      $dataset = new DataSet($key);
+      $dataset->delete();
+    }
+    $this->row->delete();
+  }
+
   public function newEmpty(){
     return $this->ormTable->insert(array(
       'name' => null,
@@ -80,7 +94,7 @@ class Entity extends __DataRow
 
     return array(
       'id'         => $this->id, 
-      'name'       => $this->id,
+      'name'       => $this->name,
       'attributes' => $attributes
     );
   }
