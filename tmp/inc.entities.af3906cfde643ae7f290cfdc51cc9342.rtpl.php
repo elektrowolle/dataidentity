@@ -2,7 +2,7 @@
   <h2>
     Entity Models
     <button role="button" class="btn btn-default glyphicon glyphicon-plus" onclick="$('#newEntityForm').toggle()"></button>
-    </h2>
+  </h2>
   <form action="<?php echo $api_address;?>/entities/add.json" method="post" class="form-inline apiForm" role="form">
     <div id="newEntityForm" class="input-group hide-on-load">
       <input name="name" class="form-control" placeholder="new name">
@@ -14,42 +14,37 @@
     </div>
   </form>
   <div id="modelList">
-    <?php $counter1=-1; if( isset($entities) && is_array($entities) && sizeof($entities) ) foreach( $entities as $key1 => $value1 ){ $counter1++; ?>
+  </div>
+</div>
 
-    <div class="modelC"> 
-      <h3>
-      Model: <?php echo $value1->name;?> 
-        <div class="btn-group" role="group">
-          <button role="button" class="btn btn-default glyphicon glyphicon-refresh" onclick="$('#entitynameform<?php echo $value1->id;?>').toggle()"></button> 
-          <button role="button" class="btn btn-default glyphicon glyphicon-minus" onclick="removeModel(this, '<?php echo $value1->id;?>')"></button>
-        </div>
-      </h3>
+<template id="modelCTemplate">
+  <div class="modelC"> 
+    <h3>
+      Model: <span class="modelName"></span>
+      <div class="btn-group" role="group">
+        <button role="button" class="btn btn-default glyphicon glyphicon-refresh changeNameButton"></button> 
+        <button role="button" class="btn btn-default glyphicon glyphicon-minus removeModelButton"></button>
+      </div>
+    </h3>
 
-      <form action="<?php echo $api_address;?>/entities/changename.json" method="post" class="form-inline apiForm" role="form">
-        <input type="hidden" name="id" value="<?php echo $value1->id;?>">
-        <input name="api" type="hidden" class="form-control" value="entities">
-        <input name="request" type="hidden" class="form-control" value="changename">
-        <input name="output" type="hidden" class="form-control" value="json">
+    <form action="<?php echo $api_address;?>/entities/changename.json" method="post" class="form-inline apiForm" role="form">
+      <input type="hidden" name="modelId" value="">
+      <div class="input-group hide-on-load entitynameformDiv">
+        <input name="name" class="form-control" placeholder="new name">
+        
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default btn" onclick="changeModelName(this)">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+          </button>
+        </span>
+      </div>
+    </form>
 
-        <div id="entitynameform<?php echo $value1->id;?>" class="input-group hide-on-load">
-          <input name="name" class="form-control" placeholder="new name">
-          <span class="input-group-btn">
-            <button type="button" class="btn btn-default btn" onclick="$(this).closest('form').submit();">
-              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-            </button>
-          </span>
-        </div>
-      </form>
+    <div class="modelAttributes">
       <h4>Attributes</h4>
-
       <form action="<?php echo $api_address;?>/entities/attribute.json" method="post" class="form-inline apiForm" role="form">
-      <input name="api" type="hidden" value="entities">
-      <input name="request" type="hidden" value="attribute">
-      <input name="output" type="hidden" value="json">
-
-      <input type="hidden" name="id" value="<?php echo $value1->id;?>">
-      <input type="hidden" name="operation" value="add">
-      <input type="hidden" name="attribute" value="">
+      <input type="hidden" name="attributeId" value="">
+      <input type="hidden" name="modelId" value="">
 
         <div class="form-group">
           <div class="input-group">
@@ -57,19 +52,21 @@
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">New Attribute<span class="caret"></span></button>
               <ul class="dropdown-menu attribute-selector" role="menu">
-                <?php $counter2=-1; if( isset($attributes) && is_array($attributes) && sizeof($attributes) ) foreach( $attributes as $key2 => $value2 ){ $counter2++; ?>
+                
+                <?php $counter1=-1; if( isset($attributes) && is_array($attributes) && sizeof($attributes) ) foreach( $attributes as $key1 => $value1 ){ $counter1++; ?>
 
-                <li><a href="javascript:void(0)" onclick="selectAttribute($(this), '<?php echo $value2->id;?>', '<?php echo $value2->name;?>')"><?php echo $value2->name;?></a></li>
+                <li class="modellAttributeSelector<?php echo $value1->id;?>"><a href="javascript:void(0)" onclick="selectAttribute($(this), '<?php echo $value1->id;?>', '<?php echo $value1->name;?>')" class="attributeName<?php echo $value1->id;?>"><?php echo $value1->name;?></a></li>
                 <?php } ?>
+
 
               </ul>
             </div>
             <span class="input-group-addon">Default Value:</span>
-            <input name="defaultValue" class="form-control" placeholder="New default view for attribute">
+            <input name="modelAttributeDefaultValue" class="form-control" placeholder="New default view for attribute">
 
             <div class="input-group-btn">
 
-              <button type="button" class="btn btn-default" onclick="$(this).parents('form').submit();">
+              <button type="button" class="btn btn-default addAtributeButton" onclick="addAttributeToEntity(this)">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
               </button>
             </div>
@@ -77,137 +74,48 @@
           </div>
         </div>
       </form>
-
-
-        <?php $counter2=-1; if( isset($value1->entityData) && is_array($value1->entityData) && sizeof($value1->entityData) ) foreach( $value1->entityData as $key2 => $value2 ){ $counter2++; ?>
-
-          <form action="<?php echo $api_address;?>/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
-            <div class="form-group">
-              <div class="input-group">
-
-                <div class="input-group-btn">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><?php echo $value2->attribute->name;?> <span class="caret"></span></button>
-                  <ul class="dropdown-menu" role="menu">
-                    <?php $counter3=-1; if( isset($attributes) && is_array($attributes) && sizeof($attributes) ) foreach( $attributes as $key3 => $value3 ){ $counter3++; ?>
-
-                    <li><a href="/#"><?php echo $value3->name;?></a></li>
-                    <?php } ?>
-
-                  </ul>
-                </div>
-                <span class="input-group-addon">Default Value:</span>
-                <input class="form-control" value="<?php echo $value2->defaultValue;?>">
-
-                <div class="input-group-btn">
-
-                    <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                    </button>
-
-                    <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                    </button>
-                </div>
-
-              </div>
-            </div>
-          </form>
-        <?php } ?>
-
-      <hr>
-    </div>
-    <?php } ?>
-
-
-    <template id="modelCTemplate">
-      <div class="modelC"> 
-        <h3>
-          Model: <span class="modelName"></span>
-          <div class="btn-group" role="group">
-            <button role="button" class="btn btn-default glyphicon glyphicon-refresh changeNameButton"></button> 
-            <button role="button" class="btn btn-default glyphicon glyphicon-minus removeModelButton"></button>
-          </div>
-        </h3>
-
-        <form action="<?php echo $api_address;?>/entities/changename.json" method="post" class="form-inline apiForm" role="form">
-          <input type="hidden" name="modelId" value="">
-          <div class="input-group hide-on-load entitynameformDiv">
-            <input name="name" class="form-control" placeholder="new name">
-            
-            <span class="input-group-btn">
-              <button type="button" class="btn btn-default btn" onclick="changeModelName(this)">
-                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-              </button>
-            </span>
-          </div>
-        </form>
-
-        <div class="modelAttributes">
-          <h4>Attributes</h4>
-          <form action="<?php echo $api_address;?>/entities/attribute.json" method="post" class="form-inline apiForm" role="form">
-          <input type="hidden" name="attributeId" value="">
-          <input type="hidden" name="modelId" value="">
-
-            <div class="form-group">
-              <div class="input-group">
-
-                <div class="input-group-btn">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">New Attribute<span class="caret"></span></button>
-                  <ul class="dropdown-menu attribute-selector" role="menu">
-                    <?php $counter1=-1; if( isset($attributes) && is_array($attributes) && sizeof($attributes) ) foreach( $attributes as $key1 => $value1 ){ $counter1++; ?>
-
-                    <li><a href="javascript:void(0)" onclick="selectAttribute($(this), '<?php echo $value1->id;?>', '<?php echo $value1->name;?>')"><?php echo $value1->name;?></a></li>
-                    <?php } ?>
-
-                  </ul>
-                </div>
-                <span class="input-group-addon">Default Value:</span>
-                <input name="modelAttributeDefaultValue" class="form-control" placeholder="New default view for attribute">
-
-                <div class="input-group-btn">
-
-                  <button type="button" class="btn btn-default addAtributeButton" onclick="$(this).parents('form').submit();">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                  </button>
-                </div>
-
-              </div>
-            </div>
-          </form>
-          <div class="modelAttributeList">
-            <template id="modelAttributeTemplate">
-              <form action="<?php echo $api_address;?>/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
-                <div class="form-group">
-                  <div class="input-group">
-
-                    <span class="input-group-addon modelAttributeName"></span>
-                    <span class="input-group-addon">Default Value:</span>
-                    <input class="form-control modelAttributeDefaultValue" value="">
-
-                    <div class="input-group-btn">
-
-                        <button type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                        </button>
-
-                        <button type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                        </button>
-                    </div> <!-- .input-group-btn -->
-                  </div> <!-- .input-group -->
-                </div> <!-- .form-group -->
-              </form> 
-            </template>
-          </div> <!-- .modellAttributeList -->
-        </div> <!-- .modelAttributes -->
-      </div>
-      <hr>
-      
-    </template>
-
+      <div class="modelAttributeList">
+      </div> <!-- .modellAttributeList -->
+    </div> <!-- .modelAttributes -->
+    <hr>
   </div>
-</div>
+</template>
+
+<template id="modelAttributeSelectorElementTemplate">
+  <li><a href="javascript:void(0)" onclick="selectAttribute($(this), 'id', 'name')"><?php echo $value->name;?></a></li>
+</template>
+
+<template id="modelAttributeTemplate">
+  <div class="modelAttributeC">
+    <form action="<?php echo $api_address;?>/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
+      <input type="hidden" name="attributeId" value="">
+      <input type="hidden" name="modelId" value="">
+      <div class="form-group">
+        <div class="input-group">
+
+          <span class="input-group-addon modelAttributeName"></span>
+          <span class="input-group-addon">Default Value:</span>
+          <input name="value" class="form-control modelAttributeDefaultValue" value="">
+
+          <div class="input-group-btn">
+
+            <button type="button" class="btn btn-default modelAttributeChangeValueButton" onclick="changeAttributeValue(this);">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            </button>
+
+            <button type="button" class="btn btn-default modelAttributeRemoveButton" onclick="removeModelAttribute(this);">
+            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+            </button>
+          </div> <!-- .input-group-btn -->
+        </div> <!-- .input-group -->
+      </div> <!-- .form-group -->
+    </form>
+  </div><!-- .modelAttributeC -->
+</template>
+
 <script type="text/javascript">
+  var $modelCTemplate = $($('#modelCTemplate').html());
+
   removeModel = function(element, id) {
     var $element = $(element);
     var args = {'id': id};
@@ -227,6 +135,44 @@
     apiRequest('entities', 'changename', 'json', args).done(function(data) {
       var entity = data.entity;
       $element.parents('.modelC').find('.modelName').html(entity.name);
+    });
+  };
+
+  changeAttributeValue = function(element) {
+    var $element     = $(element);
+    var $form        = $element.parents('form');
+    var modelId      = $form.find('input[name=modelId]')    .val();
+    var attributeId  = $form.find('input[name=attributeId]').val();
+    var defaultValue = $form.find('input[name=value]')      .val();
+
+    var args = {
+              'id'       : modelId, 
+              'attribute': attributeId,
+              'value'    : defaultValue,
+              'operation': 'defaultValue'
+            };
+
+    apiRequest('entities', 'attribute', 'json', args).done(function(data) {
+      var attribute = data.attribute;
+      $element.parents('.attributeC').find('.modelAttributeDefaultValue').html(attribute.value);
+    });
+  };
+
+  removeModelAttribute = function(element) {
+    var $element     = $(element);
+    var $form        = $element.parents('form');
+    var modelId      = $form.find('input[name=modelId]')    .val();
+    var attributeId  = $form.find('input[name=attributeId]').val();
+    var defaultValue = $form.find('input[name=value]')      .val();
+
+    var args = {
+              'id'       : modelId, 
+              'attribute': attributeId,
+              'operation': 'delete'
+            };
+
+    apiRequest('entities', 'attribute', 'json', args).done(function(data) {
+      $element.parents('.modelAttributeC').remove();
     });
   };
 
@@ -261,36 +207,37 @@
     apiRequest('entities', 'attribute', 'json', args).done(function(data) {
       var attribute = data.attribute;
       var entity    = data.entity;
-      appendAttribute($attributeList, entity, attribute);
+      appendModelAttribute($attributeList, entity, attribute);
     });
   };
 
   appendModel = function(entity){
     var $list          = $('#modelList');
-    var $template      = $($('#modelCTemplate').html().trim());
-    var $attributeList = $template.find(".attributeList");
+    var $template      = $modelCTemplate.clone();
+    var $attributeList = $template.find(".modelAttributeList");
+
     $template.find('input[name=modelId]').val(entity.id);
-    $template.find('.modelName').html(entity.name);
-    $template.find('.entitynameformDiv').attr('id', 'entitynameform' + entity.id);
-    $template.find('.changeNameButton') .attr('onclick', "$('#entitynameform" + entity.id + "').toggle()");
-    $template.find('.removeModelButton').attr('onclick', 'removeModel(this, ' + entity.id + ')');
-    $template.find('.addAtributeButton').attr('onclick', 'addAttributeToEntity(this)')
+    $template.find('.modelName')         .html(entity.name);
+    $template.find('.entitynameformDiv') .attr('id', 'entitynameform' + entity.id).hide();
+    $template.find('.changeNameButton')  .attr('onclick', "$('#entitynameform" + entity.id + "').toggle()");
+    $template.find('.removeModelButton') .attr('onclick', 'removeModel(this, ' + entity.id + ')');
+
 
     for(var attribute in entity.attributes){
-      appendAttribute(attributeList, entity, attribute);
+      appendModelAttribute($attributeList, entity, entity.attributes[attribute]);
     }
 
     $template.appendTo($list);
   }
 
-  appendAttribute = function($attributeList, entity, attribute){
-    var $template = $($attributeList.find('template').html().trim());
-    $template.find('input[name=modelId]')        .val(entity.id);
+  appendModelAttribute = function($attributeList, entity, attribute){
+    var $template = $($('#modelAttributeTemplate').html().trim());
+
+    $template.find('input[name=modelId]')        .val (entity.id);
+    $template.find('input[name=attributeId]')    .val (attribute.id);
     $template.find('.modelAttributeName')        .html(attribute.name);
-    $template.find('.modelAttributeDefaultValue').val(attribute.defaultValue);
-    $template.find('.entitynameformDiv')         .attr('id', 'entitynameform' + entity.id);
-    $template.find('.changeNameButton')          .attr('onclick', "$('#entitynameform" + entity.id + "').toggle()");
-    $template.find('.removeModelButton')         .attr('onclick', 'removeModel(this, ' + entity.id + ')');
+    $template.find('.modelAttributeDefaultValue').val (attribute.defaultValue);
+
     $template.appendTo($attributeList);
   }
 
@@ -298,4 +245,24 @@
     element.parents('form').children('input[name=attributeId]').attr('value', id);
     element.parents('.input-group-btn').children('button').html(name);
   }
+
+  showEntities = function (argument) {
+    $('.modelC').remove();
+
+    datasetC.hide();
+    entitiesC.show();
+    attributesC.hide();
+
+    navTabs.removeClass("active");
+    entitiesNav.addClass("active");
+
+    apiRequest('entities', 'all', 'json').done(function(data){
+      entities = data.entities;
+      for(var entity in entities){
+        appendModel(entities[entity]);
+      }
+    });
+    
+  }
+
 </script>

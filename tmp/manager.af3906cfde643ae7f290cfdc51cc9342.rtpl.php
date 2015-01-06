@@ -67,7 +67,7 @@
   var navTabs       = $(".navTab");
   
   onload = function (argument) {
-    showEntities();
+    showAttributes();
     initForms();
     $('.hide-on-load').hide();
   }
@@ -80,22 +80,7 @@
     navTabs.removeClass("active");
     datasetNav.addClass("active");
   }
-  showEntities = function (argument) {
-    datasetC.hide();
-    entitiesC.show();
-    attributesC.hide();
-
-    navTabs.removeClass("active");
-    entitiesNav.addClass("active");
-  }
-  showAttributes = function (argument) {
-    datasetC.hide();
-    entitiesC.hide();
-    attributesC.show();
-
-    navTabs.removeClass("active");
-    attributesNav.addClass("active");
-  }
+  
 </script>
 </body>
 </html>

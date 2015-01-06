@@ -14,6 +14,18 @@
 
     }
 
+    public function all($value='')
+    {
+      $entities = Entity::getAll();
+      $entityArrays = array();
+
+      foreach ($entities as $key => $entity) {
+        $entityArrays[] = $entity->asArray();
+      }
+      error_log(print_r($entityArrays, true));
+      $this->setContent('entities', $entityArrays);
+    }
+
     public function changeName($args)
     {
       error_log(print_r($args, true));

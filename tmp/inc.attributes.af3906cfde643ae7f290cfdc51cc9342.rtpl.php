@@ -1,13 +1,16 @@
 <?php if(!class_exists('raintpl')){exit;}?><div id="attributes">
-  <h2>Attributes</h2>
+  <h2>
+    Attributes
+    <button role="button" class="btn btn-default glyphicon glyphicon-plus" onclick="$('#newAttributeForm').toggle()"></button>
+  </h2>
   <form action="<?php echo $api_address;?>/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
-    <div class="form-group">
+    <div class="form-group hide-on-load" id="newAttributeForm">
       <div class="input-group">
-        <input class="form-control" placeholder="New Name">
+        <input class="form-control" name="name" placeholder="New Name">
 
         <div class="input-group-btn">
 
-          <button type="button" class="btn btn-default">
+          <button type="button" class="btn btn-default" onclick="addAttribute(this)">
           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
           </button>
 
@@ -15,27 +18,125 @@
       </div>
     </div>
   </form>
+  <div id="attributeList">
+    <template id="attributeCTemplate">
+      <div class="attributeC">
+        <form action="<?php echo $api_address;?>/arrivals/announce.html" method="post" class="form-inline apiForm attributenameform" role="form">
+          <input name="attributeId" type="hidden" value="">
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control" name="name" value="">
 
-  <?php $counter1=-1; if( isset($attributes) && is_array($attributes) && sizeof($attributes) ) foreach( $attributes as $key1 => $value1 ){ $counter1++; ?>
+              <div class="input-group-btn">
 
-    <form action="<?php echo $api_address;?>/arrivals/announce.html" method="post" class="form-inline apiForm" role="form">
-      <div class="form-group">
-        <div class="input-group">
-          <input class="form-control" value="<?php echo $value1->name;?>">
+                <button type="button" class="btn btn-default changeNameButton" onclick="changeAttributeName(this);">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                </button>
 
-          <div class="input-group-btn">
-
-            <button type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-            </button>
-
-            <button type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-            </button>
+                <button type="button" class="btn btn-default removeAttributeButton" onclick="remove_attribute(this);">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
-    </form>
-  <?php } ?>
-
+    </template>
+  </div>
 </div>
+
+<script type="text/javascript">
+  addAttribute = function(element) {
+    var $element  = $(element);
+    
+    var name = $element.parents('form').find('input[name=name]').val();
+    var args = {'name': name};
+
+    apiRequest('attributes', 'add', 'json', args).done(function(data) {
+      var attribute = data.attribute;
+      appendAttribute(attribute);
+
+      $modelAttributeSelectorElementTemplate = 
+          $($('#modelAttributeSelectorElementTemplate').clone().html().trim());
+
+      $modelTemplate = $modelCTemplate;
+      
+      $modelAttributeSelectorElementTemplate.find('a')
+          .html(attribute.name)
+          .attr('href', "selectAttribute($(this), '" + attribute.id + "', '" + attribute.name + "')");
+      
+      $modelAttributeSelectorElementTemplate
+          .addClass('modellAttributeSelector' + attribute.id);
+
+      $modelAttributeSelectorElementTemplate.appendTo($modelTemplate.find('.attribute-selector'));
+
+      $('#modelCTemplate').html($modelTemplate);
+    });
+  };
+
+  remove_attribute = function(element) {
+    var $element = $(element);
+    var $form    = $element.parents('form');
+
+    var id       = $form.find('input[name=attributeId]').val();
+    var args = {'id': id};
+
+    apiRequest('attributes', 'delete', 'json', args).done(function() {
+      $element.parents('.attributeC').remove();
+
+      $modelTemplate = $modelCTemplate;
+      
+      $modelTemplate.find('.modellAttributeSelector' + id).remove();
+
+      $('#modelCTemplate').html($modelTemplate);
+    });
+  };
+
+  changeAttributeName = function(element) {
+    var $element = $(element);
+    var $form    = $element.parents('form');
+
+    var name     = $form.find('input[name=name]')       .val();
+    var id       = $form.find('input[name=attributeId]').val();
+
+    var args = {'id': id, 'name': name};
+
+    apiRequest('attributes', 'changeName', 'json', args).done(function(data) {
+      var attribute = data.attribute;
+      
+      $element.parents('.modelAttributeC').find('.attributeName').html(attribute.name);
+
+      $modelTemplate = $modelCTemplate;
+      $modelTemplate.find('.attributeName' + attribute.id).html(attribute.name);
+      $('#modelCTemplate').html($modelTemplate.html());
+    });
+  };
+
+  appendAttribute = function(attribute){
+    var $list          = $('#attributeList');
+    var $template      = $($('#attributeCTemplate').html().trim());
+
+    $template.find('input[name=attributeId]').val(attribute.id);
+    $template.find('input[name=name]')       .val(attribute.name);
+    $template.find('.entitynameformDiv')     .attr('id', 'attributenameform' + attribute.id);
+
+    $template.appendTo($list);
+  }
+
+  showAttributes = function (argument) {
+    $('.attributeC').remove();
+    datasetC.hide();
+    entitiesC.hide();
+    attributesC.show();
+
+    navTabs.removeClass("active");
+    attributesNav.addClass("active");
+
+    apiRequest('attributes', 'all', 'json').done(function(data){
+      attributes = data.attributes;
+      for(var attribute in attributes){
+        appendAttribute(attributes[attribute]);
+      }
+    });
+  }
+</script>

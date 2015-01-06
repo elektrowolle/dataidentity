@@ -18,7 +18,8 @@ class Attribute extends __DataRow
 
   public function save()
   {
-    $row["name"] = $this->name;
+    $this->row["name"] = $this->name;
+    $this->row->update();
   }
 
   public function delete()
@@ -33,6 +34,16 @@ class Attribute extends __DataRow
     }
 
     $this->row->delete();
+  }
+
+  public function asArray()
+  {
+    $attributeArray = array(
+        "id"   => $this->id,
+        "name" => $this->name
+        );
+
+    return $attributeArray;
   }
 
   public function newEmpty(){
