@@ -13,9 +13,11 @@
 
 		public function defaultApi($value) {
 
-			$this->content['error'] = method_exists($value, 'getMessage')
-				? call_user_method('getMessage', $value)
-				: print_r($value, true);
+			// $this->content['error'] = method_exists($value, 'getMessage')
+			// 	? getMessage($value)
+			// 	: print_r   ($value, true);
+
+			error_log(print_r($value, true));
 
 		}
 

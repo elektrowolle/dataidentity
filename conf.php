@@ -21,7 +21,7 @@ include_once $libDirectory . 'notorm/NotORM.php';
 $pdo = new PDO($config['db_name']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-$db  = new NotORM($pdo);
+$db  = new NotORM($pdo, null, new NotORM_Cache_File($_SERVER["DOCUMENT_ROOT"] . "/tmp/ormcache"));
 
 
 $datasetTable    = $db->{"di.dataset"}();
@@ -45,14 +45,16 @@ $config['debug'] = true;
 
 // $db->debug = $config['debug'];
 
+
+
 $config['webAddress']        = 'http://whosthere.hausnr11.de/';
 $config['path']              = '/';
-$config['apiAddressRestful'] = $config['path'] . 'api.php';
+$config['apiAddressRestful'] = $config['path'] . 'api/v0';
 $config['apiAddress']        = $config['apiAddressRestful']; //*/$config['path'] . 'api.php';
 
 
 $config['appCheckinUrl'] = $config['webAddress'] . $config['path'] . '?installApp=true&arrived=true';
-$config['restFulLinks']  = "false";
+$config['restFulLinks']  = "true";
 
 
 //////Kiosk Stuff

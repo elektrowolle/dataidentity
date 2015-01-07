@@ -1,0 +1,17 @@
+Options +FollowSymLinks
+
+AddType text/cache-manifest .appcache
+#AddHandler php55-cgi .php 
+
+RewriteEngine On
+RewriteBase   /
+
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^(.+)/$                          index.php?view=$1                                       [QSA]
+RewriteRule ^api/$                           https://github.com/elektrowolle/whosthere/wiki/API      [L]
+RewriteRule ^api/v([0-9]+)?/(.+)/(.+)\.(.+)$ api.php?version=$1&requestedApi=$2&request=$3&output=$4 [QSA]
+
+
+#http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewriterule

@@ -17,7 +17,7 @@
     public function all($value='')
     {
       $attributes = Attribute::getAll();
-      $entityArrays = array();
+      $attributeArrays = array();
 
       foreach ($attributes as $key => $attribute) {
         $attributeArrays[] = $attribute->asArray();

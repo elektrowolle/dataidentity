@@ -1,6 +1,7 @@
 <?php
 //APIS
 include_once 'inc/inc.api._error.php';
+include_once 'inc/inc.api.datasets.php';
 include_once 'inc/inc.api.entities.php';
 include_once 'inc/inc.api.attributes.php';
 

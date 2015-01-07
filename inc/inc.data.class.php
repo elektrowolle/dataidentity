@@ -37,8 +37,17 @@ class data extends __DataRow
     $this->row->delete();
   }
 
-  public function newEmpty(){
+  public function asArray()
+  {
+    return array(
+      'id'      => $this->id, 
+      'dataset' => $this->dataset->id,
+      'value'   => $this->value,
+      'name'    => $this->attribute->name
+    );
+  }
 
+  public function newEmpty(){
     return $this->ormTable->insert(array(
       'dataset_id'   => null,
       'attribute_id' => null,

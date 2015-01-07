@@ -47,13 +47,15 @@ class Entity extends __DataRow
   }
 
   function makeNewDataset(){
-    $newDataSet = new DataSet(null, this);
+    $newDataSet = new DataSet(null, $this);
     foreach ($this->entityData as $id => $entityData) {
       $newData = new Data(null, $newDataSet, $entityData->attribute);
       $newData->value     = $entityData->defaultValue;
       $newData->time      = time();
       $newData->save();
+      $newDataSet->data[$newData->id] = $newData;
     }
+    return $newDataSet;
   }
 
   public function save()

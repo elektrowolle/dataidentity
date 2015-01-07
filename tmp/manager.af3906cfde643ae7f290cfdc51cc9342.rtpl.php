@@ -67,18 +67,9 @@
   var navTabs       = $(".navTab");
   
   onload = function (argument) {
-    showAttributes();
+    showDatasets();
     initForms();
     $('.hide-on-load').hide();
-  }
-
-  showDatasets = function (argument) {
-    datasetC.show();
-    entitiesC.hide();
-    attributesC.hide();
-
-    navTabs.removeClass("active");
-    datasetNav.addClass("active");
   }
   
 </script>

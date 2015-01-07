@@ -18,29 +18,42 @@ class Dataset extends __DataRow
     $this->entity = $entity == null ? new Entity((string)$this->row->entity) : $entity;
     if($data == null){
       foreach ($this->row->data() as $id => $dataRow) {
-        $this->data[$id] = new Data($id);
+        $this->data[$id] = new Data($id, $this);
       }
       
     }else{
       $this->data = $data;
     }
-
   }
 
   public function save()
   {
-    $row["entity_id"] = $this->entity->id;
-    foreach ($data as $key => $value) {
+    $this->row["entity_id"] = $this->entity->id;
+    foreach ($this->data as $key => $value) {
       $value->save();
     }
+    $this->row->update();
   }
 
   public function delete()
   {
-    foreach ($tis->data as $key => $value) {
+    foreach ($this->data as $key => $value) {
       $value->delete();
     }
     $this->row->delete();
+  }
+
+  public function asArray()
+  {
+    $data = array();
+    foreach ($this->data as $key => $value) {
+      $data[$key] = $value->asArray();
+    }
+    return array(
+      'id'     => $this->id, 
+      'entity' => $this->entity->asArray(),
+      'data'   => $data
+    );
   }
 
   public function newEmpty(){

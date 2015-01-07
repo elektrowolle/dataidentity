@@ -82,7 +82,7 @@
 </template>
 
 <template id="modelAttributeSelectorElementTemplate">
-  <li><a href="javascript:void(0)" onclick="selectAttribute($(this), 'id', 'name')"><?php echo $value->name;?></a></li>
+  <li><a href="javascript:void(0)" onclick="selectAttribute($(this), 'id', 'name')">name</a></li>
 </template>
 
 <template id="modelAttributeTemplate">

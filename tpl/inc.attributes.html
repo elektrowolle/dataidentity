@@ -63,7 +63,7 @@
       
       $modelAttributeSelectorElementTemplate.find('a')
           .html(attribute.name)
-          .attr('href', "selectAttribute($(this), '" + attribute.id + "', '" + attribute.name + "')");
+          .attr('onclick', "selectAttribute($(this), '" + attribute.id + "', '" + attribute.name + "')");
       
       $modelAttributeSelectorElementTemplate
           .addClass('modellAttributeSelector' + attribute.id);

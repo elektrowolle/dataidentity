@@ -4,6 +4,7 @@
 
 function apiRequest (api, request, output, args, method) {
   var requestAddress = "";
+  output =  (typeof output != "undefined") ? output : "json";
 
   if(restFulLinks == "true"){
     requestAddress = api_adrress 
@@ -17,7 +18,7 @@ function apiRequest (api, request, output, args, method) {
       + "&output=" + output ;
   }
   
-  var type =  (typeof method != "undefined") ? method : "get";
+  var type =  (typeof method != "undefined") ? method : "post";
   var args =  (typeof args != "undefined") ? args : "";
 
   console.debug("Ask[" + type + "]: " + requestAddress);
