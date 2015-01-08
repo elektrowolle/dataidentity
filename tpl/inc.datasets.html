@@ -46,29 +46,29 @@
 
 
 <template id="datasetDataCTemplate">
-    <div class="datasetDataC">
-      <form action="{$api_address}/dataset/updateData.json" method="post" class="form-inline apiForm" role="form">
+  <div class="datasetDataC">
+    <form action="{$api_address}/dataset/updateData.json" method="post" class="form-inline apiForm" role="form">
       <input name="id"     type="hidden">
       <input name="dataset" type="hidden">
-        <div class="form-group">
-          <div class="input-group">
+      <div class="form-group">
+        <div class="input-group">
+        
+          <span class="input-group-addon datasetDataName"></span>
+          <input name="value" class="form-control datasetDataValue">
           
-            <span class="input-group-addon datasetDataName"></span>
-            <input name="value" class="form-control datasetDataValue">
-            
 
-            <div class="input-group-btn">
+          <div class="input-group-btn">
 
-              <button type="button" class="btn btn-default datasetUpdateDataButton" onclick="datasetUpdateDate(this)">
-                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-              </button>
+            <button type="button" class="btn btn-default datasetUpdateDataButton" onclick="datasetUpdateDate(this)">
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            </button>
 
-            </div> <!-- .input-group-btn -->
-          </div> <!-- .input-group -->
-        </div> <!-- .form-group -->
-      </form>
-    </div> <!-- .datasetDataC -->
-  </template>
+          </div> <!-- .input-group-btn -->
+        </div> <!-- .input-group -->
+      </div> <!-- .form-group -->
+    </form>
+  </div> <!-- .datasetDataC -->
+</template>
 
 <script type="text/javascript">
   addDataset = function(element) {
@@ -77,15 +77,22 @@
     var entity = $element.parents('form').find('input[name=entity]').val();
     var args   = {'entity': entity};
 
+    $element.addClass('btn-warning');
+
     apiRequest('datasets', 'add', 'json', args).done(function(data) {
       var dataset = data.dataset;
       appendDataset(dataset);
+
+    $element.removeClass('btn-warning');
     });
   };
 
   removeDataset = function(element, id) {
     var $element = $(element);
     var args = {'id': id};
+
+    $element.addClass('btn-warning');
+
     apiRequest('datasets', 'delete', 'json', args).done(function() {
       $element.parents('.datasetC').remove();
     });
@@ -125,7 +132,9 @@
     var dataset = $form.find('input[name=dataset]').val();
     var id      = $form.find('input[name=id]')     .val();
     var value   = $form.find('input[name=value]')     .val();
- 
+    
+    $element.addClass('btn-warning');
+
     var args = {
               'id'   : dataset, 
               'data' : id,
@@ -133,7 +142,7 @@
             };
 
     apiRequest('datasets', 'changeValue', 'json', args).done(function(data) {
-
+      $element.removeClass('btn-warning');
     });
   };
 

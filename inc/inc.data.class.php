@@ -40,10 +40,11 @@ class data extends __DataRow
   public function asArray()
   {
     return array(
-      'id'      => $this->id, 
-      'dataset' => $this->dataset->id,
-      'value'   => $this->value,
-      'name'    => $this->attribute->name
+      'id'        => $this->id, 
+      'dataset'   => $this->dataset->id,
+      'value'     => $this->value,
+      'name'      => $this->attribute->name,
+      'attribute' => $this->attribute->id
     );
   }
 

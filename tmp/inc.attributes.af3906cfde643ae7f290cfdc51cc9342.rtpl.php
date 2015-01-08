@@ -52,6 +52,8 @@
     var name = $element.parents('form').find('input[name=name]').val();
     var args = {'name': name};
 
+    $element.addClass('btn-warning');
+
     apiRequest('attributes', 'add', 'json', args).done(function(data) {
       var attribute = data.attribute;
       appendAttribute(attribute);
@@ -71,6 +73,8 @@
       $modelAttributeSelectorElementTemplate.appendTo($modelTemplate.find('.attribute-selector'));
 
       $('#modelCTemplate').html($modelTemplate);
+
+      $element.removeClass('btn-warning');
     });
   };
 
@@ -80,7 +84,9 @@
 
     var id       = $form.find('input[name=attributeId]').val();
     var args = {'id': id};
-
+    
+    $element.addClass('btn-warning');
+    
     apiRequest('attributes', 'delete', 'json', args).done(function() {
       $element.parents('.attributeC').remove();
 
@@ -101,6 +107,8 @@
 
     var args = {'id': id, 'name': name};
 
+    $element.addClass('btn-warning');
+
     apiRequest('attributes', 'changeName', 'json', args).done(function(data) {
       var attribute = data.attribute;
       
@@ -109,6 +117,8 @@
       $modelTemplate = $modelCTemplate;
       $modelTemplate.find('.attributeName' + attribute.id).html(attribute.name);
       $('#modelCTemplate').html($modelTemplate.html());
+
+      $element.removeClass('btn-warning');
     });
   };
 

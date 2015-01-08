@@ -20,11 +20,11 @@ abstract class __DataRow
     $this->ormTable = $this->getTable();
     
     if(!isset($id) || $id == null){
-      error_log("new row");
+      if(isDebug())error_log("new row");
       $this->row = $this->newEmpty();
       $this->id = (string) $this->row;
     }else{
-      error_log("load row");
+      if(isDebug())error_log("load row");
       $this->id   = $id;
       $this->row  = $this->ormTable[$id];
     }
@@ -53,7 +53,7 @@ abstract class __DataRow
         $result[] = ($class->newInstance($id));
       }
     } catch (Exception $e) {
-      error_log("catched" . $e);
+      if(isDebug())error_log("catched" . $e);
     }
 
 

@@ -119,6 +119,9 @@
   removeModel = function(element, id) {
     var $element = $(element);
     var args = {'id': id};
+
+    $element.addClass('btn-warning');
+    
     apiRequest('entities', 'delete', 'json', args).done(function() {
       $element.parents('.modelC').remove();
     });
@@ -132,9 +135,13 @@
 
     var args = {'id': id, 'name': name};
 
+    $element.addClass('btn-warning');
+
     apiRequest('entities', 'changename', 'json', args).done(function(data) {
       var entity = data.entity;
       $element.parents('.modelC').find('.modelName').html(entity.name);
+
+      $element.removeClass('btn-warning');
     });
   };
 
@@ -152,9 +159,13 @@
               'operation': 'defaultValue'
             };
 
+    $element.addClass('btn-warning');
+
     apiRequest('entities', 'attribute', 'json', args).done(function(data) {
       var attribute = data.attribute;
       $element.parents('.attributeC').find('.modelAttributeDefaultValue').html(attribute.value);
+
+      $element.removeClass('btn-warning');
     });
   };
 
@@ -170,9 +181,11 @@
               'attribute': attributeId,
               'operation': 'delete'
             };
+    $element.addClass('btn-warning');
 
     apiRequest('entities', 'attribute', 'json', args).done(function(data) {
       $element.parents('.modelAttributeC').remove();
+
     });
   };
 
@@ -181,10 +194,14 @@
     
     var name = $element.parents('form').find('input[name=name]').val();
     var args = {'name': name};
-
+    
+    $element.addClass('btn-warning');
+    
     apiRequest('entities', 'add', 'json', args).done(function(data) {
       var entity = data.entity;
       appendModel(entity);
+
+      $element.removeClass('btn-warning');
     });
   };
 
@@ -204,10 +221,14 @@
                         'operation'   : 'add'
                       };
 
+    $element.addClass('btn-warning');
+
     apiRequest('entities', 'attribute', 'json', args).done(function(data) {
       var attribute = data.attribute;
       var entity    = data.entity;
       appendModelAttribute($attributeList, entity, attribute);
+
+      $element.removeClass('btn-warning');
     });
   };
 

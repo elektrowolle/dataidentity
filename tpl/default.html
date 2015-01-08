@@ -1,18 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{$title}</title>
-	
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<!--<script src="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.2/jquery.mobile.min.js"></script>
-	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.2/jquery.mobile.min.css" />
-	<link href="style.css" type="text/css" rel="stylesheet">-->
-	{include="basicHeaders"}
+  <title>{$title}</title>
+  
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  {include="basicHeaders"}
 
 </head>
 
 <body>
+  <div data-role="page" id="page" class="container">
+    <h1>Dataidentity</h1>
+    <h2>Resource</h2>
+    <div class="datasetC">
+      <h3>
+        <span class="datasetEntityName">{$dataset->entity->name}</span>
+      </h3>
+      <div class="datasetDataList">
+        {loop="$dataset->data"}
+          <div class="datasetDataC">
+            <form action="{$api_address}/dataset/updateData.json" method="post" class="form-inline apiForm" role="form">
+              <input name="dataset"      type="hidden" value="{$dataset->id}">
+              <input name="id" type="hidden" value="{$value->id}">
+              <div class="form-group">
+                <div class="input-group">
+                
+                  <span class="input-group-addon datasetDataName">{$value->attribute->name}</span>
+                  <input name="value" class="form-control datasetDataValue" value="{$value->value}">
+                  
+                  <div class="input-group-btn">
 
+                    <button type="button" class="btn btn-default datasetUpdateDataButton" onclick="datasetUpdateDate(this)">
+                      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                    </button>
+
+                  </div> <!-- .input-group-btn -->
+                </div> <!-- .input-group -->
+              </div> <!-- .form-group -->
+            </form>
+          </div> <!-- .datasetDataC -->
+        {/loop}
+      </div> <!-- .datasetDataList -->
+    </div> <!-- .datasetC -->
+  </div>
+  <script type="text/javascript">
+    var api_adrress   = "{$api_address}";
+    var restFulLinks  = "{$restful_links}";
+
+    datasetUpdateDate = function(element) {
+      var $element = $(element);
+      var $form    = $element.parents('form');
+
+      $element.addClass('btn-warning');
+
+      var dataset = $form.find('input[name=dataset]').val();
+      var id      = $form.find('input[name=id]')     .val();
+      var value   = $form.find('input[name=value]')     .val();
+   
+      var args = {
+                'id'   : dataset, 
+                'data' : id,
+                'value': value
+              };
+
+      apiRequest('datasets', 'changeValue', 'json', args).done(function(data) {
+        $element.removeClass('btn-warning');
+      });
+    };
+  </script>
 </body>
 </html>

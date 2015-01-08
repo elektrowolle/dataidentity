@@ -22,14 +22,14 @@
       foreach ($attributes as $key => $attribute) {
         $attributeArrays[] = $attribute->asArray();
       }
-      error_log(print_r($attributeArrays, true));
+      if(isDebug())error_log(print_r($attributeArrays, true));
       $this->setContent('attributes', $attributeArrays);
     }
 
     public function changeName($args)
     {
-      error_log("changeName");
-      error_log(print_r($args, true));
+      if(isDebug())error_log("changeName");
+      if(isDebug())error_log(print_r($args, true));
       $attribute = new Attribute($args["id"]);
       $attribute->name = $args["name"];
 

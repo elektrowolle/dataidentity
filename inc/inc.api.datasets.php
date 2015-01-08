@@ -27,7 +27,7 @@ class DatasetsApi extends apiModule
 
   public function changeName($args)
   {
-    error_log(print_r($args, true));
+    if(isDebug())error_log(print_r($args, true));
     $dataset = new Entity($args["id"]);
     $dataset->name = $args["name"];
 

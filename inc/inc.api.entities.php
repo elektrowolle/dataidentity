@@ -22,13 +22,13 @@
       foreach ($entities as $key => $entity) {
         $entityArrays[] = $entity->asArray();
       }
-      error_log(print_r($entityArrays, true));
+      if(isDebug())error_log(print_r($entityArrays, true));
       $this->setContent('entities', $entityArrays);
     }
 
     public function changeName($args)
     {
-      error_log(print_r($args, true));
+      if(isDebug())error_log(print_r($args, true));
       $entity = new Entity($args["id"]);
       $entity->name = $args["name"];
 
@@ -76,7 +76,7 @@
           break;
       }
       $this->setContent('entity', $entity->asArray());
-      error_log(print_r($entity->asArray(),true));
+      if(isDebug())error_log(print_r($entity->asArray(),true));
     }
 
     private function addAttribute($entity, $value='')

@@ -42,11 +42,11 @@ $api = new API($tpl, $output);
 
 
 if($config['debug']) 
-	error_log(
+	if(isDebug())error_log(
 		"API REQUEST:" . 
 		print_r($_GET, true)
 	);
-	error_log(
+	if(isDebug())error_log(
 		"API REQUEST:" . 
 		print_r($_POST, true)
 	);

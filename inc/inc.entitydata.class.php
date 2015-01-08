@@ -38,8 +38,8 @@ class EntityData extends __DataRow
   {
     foreach ($this->entity->row->dataset() as $key => $datasetRow) {
       $datasetRow = new DataSet($key);
-      $attributes = $datasetRow->row->data($this->attribute->table . "_id=" . $this->attribute->id);
-      foreach ($data as $key1 => $dataRow) {
+      $attributes = $datasetRow->row->data(Attribute::$table . "_id=" . $this->attribute->id);
+      foreach ($attributes as $key1 => $dataRow) {
         $data = new Data($key1);
         $data->delete();
       }

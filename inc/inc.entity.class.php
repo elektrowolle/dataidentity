@@ -32,7 +32,6 @@ class Entity extends __DataRow
                   $this, 
                   new Attribute($attribute_id)
                   );
-    // error_log(print_r($newData, true));
 
     $newData->defaultValue = $defaultValue;
     $newData->save();

@@ -17,7 +17,7 @@
 			// 	? getMessage($value)
 			// 	: print_r   ($value, true);
 
-			error_log(print_r($value, true));
+			if(isDebug())error_log(print_r($value, true));
 
 		}
 
