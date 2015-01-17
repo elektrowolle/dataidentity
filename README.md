@@ -1,6 +1,6 @@
 dataidentitiy
 =============
 
-[dataidentitity.brainsoff.com/manager/](http://dataidentitity.brainsoff.com/manager/)
+[dataidentitity.brainisoff.com/manager/](http://dataidentitity.brainisoff.com/manager/)
 
-[dataidentitity.brainsoff.com/static/index.html](http://dataidentitity.brainsoff.com/static/index.html)
+[dataidentitity.brainisoff.com/static/index.html](http://dataidentitity.brainisoff.com/static/index.html)
