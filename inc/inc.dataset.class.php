@@ -47,7 +47,7 @@ class Dataset extends __DataRow
   {
     $data = array();
     foreach ($this->data as $key => $value) {
-      $data[$key] = $value->asArray();
+      $data[$value->id] = $value->asArray();
     }
     return array(
       'id'     => $this->id, 

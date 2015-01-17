@@ -15,4 +15,3 @@ class DefaultView extends ViewModule {
 
 View::registerView('DefaultView', 'default', 'default');
 
-?>

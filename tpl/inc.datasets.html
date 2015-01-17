@@ -31,7 +31,7 @@
     <template id="datasetCTemplate">
       <div class="datasetC">
         <h3>
-          Set Type: <span class="datasetEntityName"></span>
+          <span class="label label-default datasetId"></span> <span class="datasetEntityName"></span>
           <div class="btn-group" role="group">
             <button role="button" class="btn btn-default glyphicon glyphicon-minus removeModelButton removeDatasetButton"></button> 
           </div>
@@ -53,7 +53,13 @@
       <div class="form-group">
         <div class="input-group">
         
+          <span class="input-group-addon">
+            <span class="label label-default datasetDataId">
+            </span>
+          </span>
+
           <span class="input-group-addon datasetDataName"></span>
+          
           <input name="value" class="form-control datasetDataValue">
           
 
@@ -104,6 +110,7 @@
     var $dataList = $template.find(".datasetDataList");
 
     $template.find('.datasetEntityName')  .html(dataset.entity.name);
+    $template.find('.datasetId')          .html(dataset.id);
     $template.find('.removeDatasetButton').attr('onclick', 'removeDataset(this, ' + dataset.id + ')');
 
 
@@ -117,6 +124,7 @@
   appendDatasetData = function(datasetData, $list){
     var $template = $($('#datasetDataCTemplate').html().trim());
 
+    $template.find('.datasetDataId')     .html(datasetData.id   );
     $template.find('.datasetDataName')   .html(datasetData.name   );
     $template.find('.datasetDataValue')  .val (datasetData.value  );
     $template.find('input[name=dataset]').val (datasetData.dataset);
@@ -147,8 +155,8 @@
   };
 
   function selectDatasetEntity (element, id, name) {
-    $element = $(element);
-    $form = $element.parents('form');
+    var $element = $(element);
+    var $form = $element.parents('form');
     $form.find('input[name=entity]')   .val (id);
     $form.find('#newDatasetEntityName').html(name);
   }

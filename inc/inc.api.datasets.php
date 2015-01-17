@@ -11,7 +11,8 @@ class DatasetsApi extends apiModule
   }
 
   public function defaultApi($value) {
-
+    $dataset = new Dataset($value["id"]);
+    $this->setContent('dataset', $dataset->asArray());
   }
 
   public function all($value='')
@@ -20,21 +21,11 @@ class DatasetsApi extends apiModule
     $datasetArrays = array();
 
     foreach ($datasets as $key => $dataset) {
-      $datasetArrays[] = $dataset->asArray();
+      $datasetArrays[$dataset->id] = $dataset->asArray();
     }
     $this->setContent('datasets', $datasetArrays);
   }
 
-  public function changeName($args)
-  {
-    if(isDebug())error_log(print_r($args, true));
-    $dataset = new Entity($args["id"]);
-    $dataset->name = $args["name"];
-
-    $dataset->save();
-
-    $this->setContent('dataset', $dataset->asArray());
-  }
 
   public function add($value='')
   {
@@ -61,6 +52,15 @@ class DatasetsApi extends apiModule
     
     $data->value = $value['value'];
     $data->save();
+
+    $this->setContent('data', $data->asArray());
+  }
+
+  public function getValue($value='')
+  {
+    $dataset = new Dataset($value['id']);
+    $data = $dataset->data[$value['data']];
+    
 
     $this->setContent('data', $data->asArray());
   }

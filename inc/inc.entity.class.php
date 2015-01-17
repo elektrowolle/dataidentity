@@ -35,6 +35,17 @@ class Entity extends __DataRow
 
     $newData->defaultValue = $defaultValue;
     $newData->save();
+
+    foreach ($this->row->dataset() as $key => $value) {
+      $dataset = new Dataset($key);
+      $data    = new Data(null, $dataset, $newData->attribute);
+      
+      $data->time = time();
+      $data->save();
+
+      $dataset->data[$data->id] = $data;
+    }    
+    
     $this->entityData[$newData->id] = $newData;
     return $this->entityData[$newData->id];
 
@@ -77,6 +88,7 @@ class Entity extends __DataRow
       $dataset = new DataSet($key);
       $dataset->delete();
     }
+    
     $this->row->delete();
   }
 
@@ -90,7 +102,7 @@ class Entity extends __DataRow
   {
     $attributes = array();
     foreach ($this->entityData as $key => $value) {
-      $attributes[$key] = $value->asArray();
+      $attributes[$value->id] = $value->asArray();
     }
 
     return array(

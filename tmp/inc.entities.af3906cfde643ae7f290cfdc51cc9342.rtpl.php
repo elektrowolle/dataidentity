@@ -20,7 +20,7 @@
 <template id="modelCTemplate">
   <div class="modelC"> 
     <h3>
-      Model: <span class="modelName"></span>
+      <span class="label label-default modelId"></span>Model: <span class="modelName"></span>
       <div class="btn-group" role="group">
         <button role="button" class="btn btn-default glyphicon glyphicon-refresh changeNameButton"></button> 
         <button role="button" class="btn btn-default glyphicon glyphicon-minus removeModelButton"></button>
@@ -93,6 +93,11 @@
       <div class="form-group">
         <div class="input-group">
 
+          <span class="input-group-addon">
+            <span class="label label-default attributeId">
+            
+           </span>
+          </span>
           <span class="input-group-addon modelAttributeName"></span>
           <span class="input-group-addon">Default Value:</span>
           <input name="value" class="form-control modelAttributeDefaultValue" value="">
@@ -237,7 +242,8 @@
     var $template      = $modelCTemplate.clone();
     var $attributeList = $template.find(".modelAttributeList");
 
-    $template.find('input[name=modelId]').val(entity.id);
+    $template.find('input[name=modelId]').val (entity.id);
+    $template.find('.modelId')           .html(entity.id);
     $template.find('.modelName')         .html(entity.name);
     $template.find('.entitynameformDiv') .attr('id', 'entitynameform' + entity.id).hide();
     $template.find('.changeNameButton')  .attr('onclick', "$('#entitynameform" + entity.id + "').toggle()");
@@ -256,6 +262,7 @@
 
     $template.find('input[name=modelId]')        .val (entity.id);
     $template.find('input[name=attributeId]')    .val (attribute.id);
+    $template.find('.attributeId')               .html(attribute.id);
     $template.find('.modelAttributeName')        .html(attribute.name);
     $template.find('.modelAttributeDefaultValue').val (attribute.defaultValue);
 
@@ -278,7 +285,7 @@
     entitiesNav.addClass("active");
 
     apiRequest('entities', 'all', 'json').done(function(data){
-      entities = data.entities;
+      var entities = data.entities;
       for(var entity in entities){
         appendModel(entities[entity]);
       }

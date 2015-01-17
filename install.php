@@ -49,7 +49,3 @@
 		echo "\n exception: ";
 		print_r($e);
 	}
-
-	
-
-?>

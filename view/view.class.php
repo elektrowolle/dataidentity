@@ -38,4 +38,3 @@ class View {
 
 include_once 'view._views.php';
 
-?>

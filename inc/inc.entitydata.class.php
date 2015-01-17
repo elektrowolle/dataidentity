@@ -39,13 +39,12 @@ class EntityData extends __DataRow
     foreach ($this->entity->row->dataset() as $key => $datasetRow) {
       $datasetRow = new DataSet($key);
       $attributes = $datasetRow->row->data(Attribute::$table . "_id=" . $this->attribute->id);
+
       foreach ($attributes as $key1 => $dataRow) {
-        $data = new Data($key1);
+        $data = new Data($key1, $this->entity, $this->attribute);
         $data->delete();
       }
     }
-
-    $this->row->delete();
   }
 
   public function newEmpty(){

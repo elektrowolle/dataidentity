@@ -14,6 +14,7 @@ class Attribute extends __DataRow
   {
     $this->super($id);
     $this->name = $this->row["name"];
+    $this->id   = $this->row["id"  ];
   }
 
   public function save()

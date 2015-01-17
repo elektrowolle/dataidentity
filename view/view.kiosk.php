@@ -47,4 +47,3 @@ View::registerView('KioskView', 'kiosk', 'kiosk');
 
 */
 
-?>

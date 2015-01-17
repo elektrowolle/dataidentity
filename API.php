@@ -4,12 +4,23 @@ include_once 'conf.php';
 include_once 'inc/inc.api.class.php';
 
 //Arrivals
-$args         = '';
+$args         = array();
 $output       = 'html';
 $requestedApi = '';
 $request      = '';
 $content      = '';
 $api_success  = false;
+
+foreach ($_GET as $key => $value) {
+	if(
+		$key != 'requestedApi' &&
+		$key != 'output'       &&
+		$key != 'args'         &&
+		$key != 'version'      &&
+		$key != 'request'
+		)
+	$args[$key] = $value;
+}
 
 if (!empty($_GET['requestedApi'])) 
 	$requestedApi = $_GET['requestedApi'];
@@ -22,6 +33,8 @@ if(!empty($_GET['args']))
 
 if(!empty($_GET['request']))
 	$request = $_GET['request'];
+
+
 
 
 if (!empty($_POST['requestedApi'])) 
@@ -42,14 +55,21 @@ $api = new API($tpl, $output);
 
 
 if($config['debug']) 
-	if(isDebug())error_log(
-		"API REQUEST:" . 
-		print_r($_GET, true)
-	);
-	if(isDebug())error_log(
-		"API REQUEST:" . 
-		print_r($_POST, true)
-	);
+	if(isDebug()){
+		error_log(
+			"API REQUEST GET:" . 
+			print_r($_GET, true)
+		);
+		error_log(
+			"API REQUEST POST:" . 
+			print_r($_POST, true)
+		);
+		
+		error_log(
+			"API REQUEST ARGS:" . 
+			print_r($args, true)
+		);
+	}
 
 
 try{

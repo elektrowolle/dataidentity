@@ -6,12 +6,13 @@
   {
     
     function __construct($args = array('' => '')) {
-        parent::__construct($args);
-        $this->template = 'api';
+      parent::__construct($args);
+      $this->template = 'api';
     }
 
     public function defaultApi($value) {
-
+      $entity = new Entity($value["id"]);
+      $this->setContent('entity', $entity->asArray());
     }
 
     public function all($value='')
@@ -20,7 +21,7 @@
       $entityArrays = array();
 
       foreach ($entities as $key => $entity) {
-        $entityArrays[] = $entity->asArray();
+        $entityArrays[$entity->id] = $entity->asArray();
       }
       if(isDebug())error_log(print_r($entityArrays, true));
       $this->setContent('entities', $entityArrays);

@@ -8,16 +8,16 @@
 		var $template;
 		var $tplMessage;
 		
-		function __construct($args = array('' => '')) {
+		function __construct($args = array()) {
   			$this->content    = array();
 			$this->template   = 'api';
 			$this->tplMessage = '';
 
-			if(!empty($args)) {
-				foreach ($args as $key => $value) {
-					$this->get($key, $value);
-				}
-			}
+			// if(!empty($args) && count($args) > 0) {
+			// 	foreach ($args as $key => $value) {
+			// 		$this->get($key, $value);
+			// 	}
+			// }
 		}
 
 		public function get($request, $args = array())

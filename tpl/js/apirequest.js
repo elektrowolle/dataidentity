@@ -23,7 +23,7 @@ function apiRequest (api, request, output, args, method) {
 
   console.debug("Ask[" + type + "]: " + requestAddress);
   
-  $ajax = $.ajax({
+  var $ajax = $.ajax({
     url     : requestAddress,
     type    : type,
     dataType: output,
@@ -104,6 +104,8 @@ function initForms () {
             run = $element.value;
           }
 
+          break;
+
         default:
           args[$element.name] = $element.value;
           break;
@@ -122,19 +124,19 @@ function initForms () {
       console.debug(results);
       if (replace != "") {
         $("#" + replace).html(results);
-      };
+      }
 
       if (results_into != "") {
         this[results_into] = results;
-      };
+      }
 
       if (run != "") {
         this[run](results);
-      };
+      }
 
       if (storeLocal && (typeof results.localStorage != "undefined")) {
         saveInLocalStorage(results.localStorage);
-      };
+      }
       return results;
     });
 
@@ -142,7 +144,7 @@ function initForms () {
 
   });
   
-};
+}
 
 function saveInLocalStorage (jsonValues) {
   $.each(jsonValues, function (key, value) {

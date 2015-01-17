@@ -89,4 +89,3 @@
 		return $GLOBALS["config"]["debug"];
 	}
 
-?>

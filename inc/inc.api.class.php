@@ -18,13 +18,14 @@ class API {
 		$this->output = API::loadOutput($output);
 	}
 
-	public function askApi($requestedApi, $request, $args = '') {
+	public function askApi($requestedApi, $request, $args = array()) {
 		$result = '';
 		$api;
 		if(!is_array($args)){
 			$decodedArgs = json_decode($args, true);
 			$args        = $decodedArgs != null ? $decodedArgs : $args;
 		}
+
 		try {
 			if (!isset(API::$apis[$requestedApi])) {
 				throw new Exception("No such API: " . $requestedApi, 1);

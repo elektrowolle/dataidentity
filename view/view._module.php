@@ -53,4 +53,3 @@ abstract class ViewModule
 		$tpl->draw  ($this->template);
 	}
 }
-?>

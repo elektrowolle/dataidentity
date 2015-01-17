@@ -10,8 +10,11 @@
         $this->template = 'api';
     }
 
-    public function defaultApi($value) {
+    public function defaultApi($args) {
+      $id = $args['id'];
 
+      $attribute = new Attribute($args["id"]);
+      $this->setContent('attribute', $attribute->asArray());
     }
 
     public function all($value='')

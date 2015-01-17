@@ -89,4 +89,3 @@ $tpl->assign('restful_links'   , $config['restFulLinks']);
 $tpl->assign('api_address'     , $config['apiAddress']);
 $tpl->assign('web_address'     , $config['webAddress']);
 $tpl->assign('app_checkin_url' , $config['appCheckinUrl']);
-?>

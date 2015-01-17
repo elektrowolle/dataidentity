@@ -37,4 +37,3 @@ View::registerView('KioskRCView', 'kioskrc', 'kioskrc');
 
 */
 
-?>

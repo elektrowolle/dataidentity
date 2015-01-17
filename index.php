@@ -18,4 +18,4 @@ try {
 }
 
 $view->draw($tpl);
-?>
+

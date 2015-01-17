@@ -16,4 +16,3 @@
 		);
 
 	$config['lang']['de']['_welcome'] = 'Willkommen';
-?>

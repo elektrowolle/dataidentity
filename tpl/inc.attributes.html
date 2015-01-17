@@ -25,6 +25,11 @@
           <input name="attributeId" type="hidden" value="">
           <div class="form-group">
             <div class="input-group">
+              <span class="input-group-addon">
+                <span class="label label-default attributeId">
+                </span>
+              </span>
+
               <input class="form-control" name="name" value="">
 
               <div class="input-group-btn">
@@ -37,6 +42,7 @@
                 <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                 </button>
               </div>
+
             </div>
           </div>
         </form>
@@ -58,10 +64,10 @@
       var attribute = data.attribute;
       appendAttribute(attribute);
 
-      $modelAttributeSelectorElementTemplate = 
+      var $modelAttributeSelectorElementTemplate =
           $($('#modelAttributeSelectorElementTemplate').clone().html().trim());
 
-      $modelTemplate = $modelCTemplate;
+      var $modelTemplate = $modelCTemplate;
       
       $modelAttributeSelectorElementTemplate.find('a')
           .html(attribute.name)
@@ -90,7 +96,7 @@
     apiRequest('attributes', 'delete', 'json', args).done(function() {
       $element.parents('.attributeC').remove();
 
-      $modelTemplate = $modelCTemplate;
+      var $modelTemplate = $modelCTemplate;
       
       $modelTemplate.find('.modellAttributeSelector' + id).remove();
 
@@ -111,10 +117,10 @@
 
     apiRequest('attributes', 'changeName', 'json', args).done(function(data) {
       var attribute = data.attribute;
+      var $modelTemplate = $modelCTemplate;
       
       $element.parents('.modelAttributeC').find('.attributeName').html(attribute.name);
 
-      $modelTemplate = $modelCTemplate;
       $modelTemplate.find('.attributeName' + attribute.id).html(attribute.name);
       $('#modelCTemplate').html($modelTemplate.html());
 
@@ -126,8 +132,9 @@
     var $list          = $('#attributeList');
     var $template      = $($('#attributeCTemplate').html().trim());
 
-    $template.find('input[name=attributeId]').val(attribute.id);
-    $template.find('input[name=name]')       .val(attribute.name);
+    $template.find('input[name=attributeId]').val (attribute.id);
+    $template.find('.attributeId')           .html(attribute.id);
+    $template.find('input[name=name]')       .val (attribute.name);
     $template.find('.entitynameformDiv')     .attr('id', 'attributenameform' + attribute.id);
 
     $template.appendTo($list);
@@ -143,7 +150,7 @@
     attributesNav.addClass("active");
 
     apiRequest('attributes', 'all', 'json').done(function(data){
-      attributes = data.attributes;
+      var attributes = data.attributes;
       for(var attribute in attributes){
         appendAttribute(attributes[attribute]);
       }

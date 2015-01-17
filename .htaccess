@@ -9,9 +9,15 @@ RewriteBase   /
 #RewriteCond %{REQUEST_FILENAME} !-d
 #RewriteCond %{REQUEST_FILENAME} !-f
 
-RewriteRule ^(.+)/$                          index.php?view=$1                                       [QSA]
-RewriteRule ^api/$                           https://github.com/elektrowolle/whosthere/wiki/API      [L]
-RewriteRule ^api/v([0-9]+)?/(.+)/(.+)\.(.+)$ api.php?version=$1&requestedApi=$2&request=$3&output=$4 [QSA]
+RewriteRule ^static/(.+)$                                          $1                                                                         [QSA]
+RewriteRule ^api/$                                                 https://github.com/elektrowolle/dataidentitiy/wiki/API                     [L]
+RewriteRule ^(.+)/$                                                index.php?view=$1                                                          [QSA]
+RewriteRule ^api/v1/(.+)/([0-9]+)/([^/]+)/([^/]+)\.(.+)$   api.php?version=1&requestedApi=$1&id=$2&request=$3&operation=$4&output=$5 [L]
+RewriteRule ^api/v1/(.+)/([0-9]+)/(.+)\.(.+)$              api.php?version=1&requestedApi=$1&id=$2&request=$3&output=$4              [L]
+RewriteRule ^api/v1/(.+)/([0-9]+)\.(.+)$                   api.php?version=1&requestedApi=$1&id=$2&output=$3                         [L]
+RewriteRule ^api/v1/(.+)/(.+)/(.+)\.(.+)$                  api.php?version=1&requestedApi=$1&request=$2&operation=$3&output=$4       [QSA]
+
+RewriteRule ^api/v0/(.+)/(.+)\.(.+)$                       api.php?version=0&requestedApi=$1&request=$2&output=$3                    [QSA]
 
 
 #http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewriterule
