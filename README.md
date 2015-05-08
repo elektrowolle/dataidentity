@@ -1,6 +1,4 @@
 dataidentitiy
 =============
 
-[dataidentitity.brainisoff.com/manager/](http://dataidentitity.brainisoff.com/manager/)
-
-[dataidentitity.brainisoff.com/static/index.html](http://dataidentitity.brainisoff.com/static/index.html)
+A little data manager. With API and managing front/backend.
